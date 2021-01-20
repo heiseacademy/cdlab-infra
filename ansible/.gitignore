@@ -1,0 +1,21 @@
+# Exclude direnv environment vars
+.envrc
+
+# Ansible runtime and backups
+*.original
+*.tmp
+*.bkp
+*.backup
+*.retry
+*.*~
+
+# Exclude all binaries
+*.bin
+*.jar
+*.tar
+*.zip
+*.gzip
+*.tgz
+
+# ansible-digital_ocean Cache
+ansible-digital_ocean.cache
