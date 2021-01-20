@@ -1,0 +1,11 @@
+---
+- name: apply common configuration to all nodes (ie docker, docker-compose)
+  hosts: all
+  pre_tasks:
+    - name: Update repositories cache
+      apt:
+        update_cache: yes
+  vars_files:
+    - "./vars/users.yml"
+  roles:
+    - common

@@ -1,0 +1,12 @@
+---
+- name: Ensure a locale exists
+  locale_gen:
+    name: en_US.UTF-8
+    state: present
+
+- name: Add locale to /etc/environment
+  lineinfile:
+    path: /etc/environment
+    regexp: '^LC_ALL='
+    insertafter: '^PATH='
+    line: 'LC_ALL="en_US.UTF-8"'

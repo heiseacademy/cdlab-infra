@@ -1,0 +1,8 @@
+---
+- name: configure apt
+  template:
+    dest: /etc/apt/apt.conf.d/50unattended-upgrades
+    src: templates/50unattended-upgrades.j2
+    mode: 0644
+    owner: root
+    group: root

@@ -1,0 +1,20 @@
+---
+- import_tasks: disable_ipv6.yml
+- import_tasks: configure_locale.yml
+- import_tasks: configure_vimrc.yml
+- import_tasks: configure_apt.yml
+- import_tasks: setup_users.yml
+
+- name: Install a list of packages
+  apt:
+    name: "{{ common_packages }}"
+    update_cache: yes
+
+- name: Install docker and docker-compose
+  import_role:
+    name: geerlingguy.docker
+
+- name: create common dir for docker-compose based installations
+  file:
+    path: /opt/docker
+    state: directory

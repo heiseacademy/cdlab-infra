@@ -1,0 +1,5 @@
+---
+# handlers file for common
+- name: apt-get update
+  apt:
+    update_cache: yes

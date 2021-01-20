@@ -1,0 +1,8 @@
+---
+# defaults file for common
+common_packages:
+  - htop
+  - vim
+  - jq
+  - curl
+  - gdisk

@@ -1,0 +1,11 @@
+---
+- name: disable ipv6
+  template:
+    dest: /etc/sysctl.d/01-disable-ipv6.conf
+    src: templates/01-disable-ipv6.conf.j2
+    mode: 0644
+    owner: root
+    group: root
+
+- name: disable ipv6
+  shell: "echo 1 > /proc/sys/net/ipv6/conf/all/disable_ipv6"

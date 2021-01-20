@@ -1,0 +1,39 @@
+---
+- name: Make sure we have a 'serviceuser' group
+  group:
+    name: serviceuser
+    state: present
+  tags:
+    - serviceuser_setup
+
+- name: Make sure we have a 'wheel' group
+  group:
+    name: wheel
+    state: present
+  tags:
+    - user_setup
+
+- name: Allow 'wheel' group to have passwordless sudo
+  lineinfile:
+    dest: /etc/sudoers
+    state: present
+    regexp: '^%wheel'
+    line: '%wheel ALL=(ALL) NOPASSWD: ALL'
+    validate: visudo -cf %s
+
+- name: Add sudoers users to wheel group
+  user:
+    name: "{{ item.username }}"
+    shell: /bin/bash
+    groups: [ wheel ]
+    append: yes
+  with_items: "{{ users }}"
+  tags:
+    - user_setup
+
+- authorized_key:
+    user: "{{ item.username }}"
+    key: https://github.com/{{ item.username }}.keys
+  with_items: "{{ users }}"
+  tags:
+    - user_setup
