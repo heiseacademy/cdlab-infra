@@ -23,6 +23,54 @@ Die Installation des CD Labs erfolgt in mehreren Schritten:
 2) Erstellung der leeren Virtuellen Machinen als DigitalOcean Droplets mit [terraform](https://www.terraform.io/)
 3) Provisionierung der VMs mit [Ansible](https://www.ansible.com/) und [docker-compose](https://docs.docker.com/compose/)
 
+### Voraussetzungen
+Voraussetzung für das im Folgenden beschriebene automatisierte Erzeugen Deines eigenen CD Labors sind
+* ein **SSH Key Paar**
+* ein **DigitalOcean Account**
+* ein **Github Account**, der Leserechte auf die Heise Academy Github Organisation heiseacademy/cdlab hat.
+* eine **DNS Domain**
+
+##### SSH Key
+Die Automatisierungsskripte erwarten einen SSH Key in einem Heise Academy Konfigurationsverzeichnis ```.heiseacademy``` in Deinem Homeverzeichnis.
+
+Auf der Kommandozeile (Git Bash unter Windows) kannst Du das Verzeichnis und einen SSH Key so erstellen:
+```bash
+$ cd ~
+$ mkdir .heiseacademy
+$ cd .heiseacademy
+$ ssh-keygen -t rsa -b 4096 -f id_rsa -N ''
+```
+##### DigitalOcean Account, SSH Key und Personal Access Token
+Deinen DigitalOcean Account kannst Du Dir hier erzeugen: [https://cloud.digitalocean.com/registrations/new](https://cloud.digitalocean.com/registrations/new)
+
+Bitte hinterlege den öffentlichen Teil Deines SSH Keys (den Inhalt der Datei ```~/.heiseacademy/id_rsa.pub```) unter
+```Account -> Settings -> Security -> SSH Keys``` und setze den Namen auf ```heiseacademy```.
+
+Wenn Du schon mal hier bist, erzeuge Dir auch gleich ein Personal Access Token: ```Account -> API -> Tokens/Keys -> Generate New Token```. Token Name ist wieder ```heiseacademy``` - achte darauf, dass **Read und Write Scope aktiviert** sind.
+Den Token speichere bitte in einer Datei mit dem Namen **DO_API_TOKEN** in Deinem ```~/.heiseacademy``` Verzeichnis ab:
+```bash
+$ cd ~/.heiseacademy
+$ echo '<dein token>' > DO_API_TOKEN
+```
+##### Github Account
+Einen Github Account hast Du bereits (sonst könntest Du nicht auf die Heise Academy Repositories zugreifen).
+Bitte hinterlege auch dort den öffentlichen Teil Deines SSH Keys unter ```Benutzermenü -> Settings -> SSH and GPG Keys``` und wähle als Title ```heiseacademy```.
+
+##### DNS Domain
+Um später alle Labor Server per Letsencrypt mit eigenen ssl-Zertifikaten auszustatten, benötigst Du eine eigene DNS Domain. Es gibt zahlreiche Anbieter, die kostenlose Domain Registrierungen erlauben. Du kannst zum Beispiel [http://www.freenom.com](http://www.freenom.com/de/index.html) nutzen und dort eine Domain Deiner Wahl unter diversen Toplevel Domains (*.tk, *.ml, ...) registrieren.
+Wichtig ist, dass Du in den Einstellungen der Domain die Nameserver von DigitalOcean einträgst. Bei freenom.com findest Du das unter ```freenom.com -> Services -> My Domains -> Manage Domain -> Management Tools -> Custom Nameservers```:
+```bash
+Nameserver1: ns1.digitalocean.com
+Nameserver2: ns2.digitalocean.com
+Nameserver3: ns3.digitalocean.com
+```
+Abschließend speichere die gewählte Domain bitte in einer Datei ```CDLAB_BASE_DOMAIN``` in Deinem  ```~/.heiseacademy``` Verzeichnis ab:
+```bash
+$ cd ~/.heiseacademy
+$ echo '<meine dns domain>' > CDLAB_BASE_DOMAIN
+$ # zum Beispiel:
+$ # echo 'my-cdlab.tk' > CDLAB_BASE_DOMAIN
+```
 ### Tools
 Für das Setup Deines CD Labs benötigst Du die **Kommandozeilen Tools** [git](), [terraform](https://www.terraform.io/) und [Ansible](https://www.ansible.com/). Optional sind lokale Installationen von [docker](https://docs.docker.com) und [docker-compose](https://docs.docker.com/compose/).
 Als Shell verwendest Du am besten eine [Bash](https://www.gnu.org/software/bash/).
@@ -80,9 +128,3 @@ ansible 2.10.5
   executable location = ~/.virtualenvs/cdlab-infra/bin/ansible
   python version = 3.8.1 (default, Jan  8 2020, 16:24:34) [Clang 11.0.0 (clang-1100.0.33.16)]
 ```
-
----
-
-Mein Vorgehen orientiert sich an diesem Tutorial aus dem Digital Ocean Community: [How To Install and Configure Ansible on Ubuntu 20.04](https://www.digitalocean.com/community/tutorials/how-to-install-and-configure-ansible-on-ubuntu-20-04) 
-
-#### Jenkins
