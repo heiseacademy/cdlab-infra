@@ -24,11 +24,11 @@ Die Installation des CD Labs erfolgt in mehreren Schritten:
 3) Provisionierung der VMs mit [Ansible](https://www.ansible.com/) und [docker-compose](https://docs.docker.com/compose/)
 
 ### Voraussetzungen
-Voraussetzung für das im Folgenden beschriebene automatisierte Erzeugen Deines eigenen CD Labors sind
+Für das Aufsetzen des CD Labs benötigst Du
 * ein **SSH Key Paar**
-* ein **DigitalOcean Account**
-* ein **Github Account**, der Leserechte auf die Heise Academy Github Organisation heiseacademy/cdlab hat.
-* eine **DNS Domain**
+* einen **DigitalOcean Account**
+* einen **Github Account**, der Leserechte auf die Heise Academy Github Organisation heiseacademy/cdlab hat.
+* eine eigene **DNS Domain**
 
 ##### SSH Key
 Die Automatisierungsskripte erwarten einen SSH Key in einem Heise Academy Konfigurationsverzeichnis ```.heiseacademy``` in Deinem Homeverzeichnis.
