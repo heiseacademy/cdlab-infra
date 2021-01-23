@@ -1,0 +1,245 @@
+version: '3.3'
+services:
+  traefik:
+    image: "traefik:v2.4"
+    container_name: "traefik"
+    command:
+      #- "--log.level=DEBUG"
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.websecure.address=:443"
+      - "--certificatesresolvers.myresolver.acme.tlschallenge=true"
+      - "--certificatesresolvers.myresolver.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory"
+      - "--certificatesresolvers.myresolver.acme.email=postmaster@{{ lookup('env', 'CDLAB_BASE_DOMAIN') }}"
+      - "--certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json"
+    ports:
+      - "443:443"
+      - "8080:8080"
+    volumes:
+      - "./storage/letsencrypt:/letsencrypt"
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+
+  redis:
+    restart: always
+    image: sameersbn/redis:4.0.9-2
+    command:
+    - --loglevel warning
+    volumes:
+    - /opt/docker/gitlab/storage/redis:/var/lib/redis:Z
+
+  postgresql:
+    restart: always
+    image: sameersbn/postgresql:12-20200524
+    volumes:
+    - /opt/docker/gitlab/storage/postgresql:/var/lib/postgresql:Z
+    environment:
+    - DB_USER=gitlab
+    - DB_PASS=password
+    - DB_NAME=gitlabhq_production
+    - DB_EXTENSION=pg_trgm,btree_gist
+
+  registry:
+    image: registry:2.7.1
+    restart: always
+    expose:
+    - "5000"
+    ports:
+    - "5000:5000"
+    volumes:
+    - /opt/docker/gitlab/storage/gitlab/shared/registry:/var/lib/registry:Z
+    - /opt/docker/gitlab/storage/registry/certs:/certs:Z
+    environment:
+    - REGISTRY_LOG_LEVEL=info
+    - REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY=/var/lib/registry
+    - REGISTRY_AUTH_TOKEN_REALM=https://gitlab.{{ lookup('env', 'CDLAB_BASE_DOMAIN') }}/jwt/auth
+    - REGISTRY_AUTH_TOKEN_SERVICE=container_registry
+    - REGISTRY_AUTH_TOKEN_ISSUER=gitlab-issuer
+    - REGISTRY_AUTH_TOKEN_ROOTCERTBUNDLE=/certs/registry.crt
+    - REGISTRY_STORAGE_DELETE_ENABLED=true
+
+  chartmuseum:
+    image: chartmuseum/chartmuseum:v0.11.0
+    restart: always
+    expose:
+    - "7080"
+    ports:
+    - "7080:8080"
+    volumes:
+    - /opt/docker/gitlab/storage/chartmuseum/charts:/charts:Z
+    environment:
+    - DEBUG=1
+    - STORAGE=local
+    - STORAGE_LOCAL_ROOTDIR=/charts
+    - BASIC_AUTH_USER=chartmuseum
+    - BASIC_AUTH_PASS=xgfdxb32761
+
+  gitlab:
+    restart: always
+    image: sameersbn/gitlab:13.7.3
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.gitlab.rule=Host(`gitlab.{{ lookup('env', 'CDLAB_BASE_DOMAIN') }}`)"
+      - "traefik.http.routers.gitlab.entrypoints=websecure"
+      - "traefik.http.routers.gitlab.tls.certresolver=myresolver"
+    depends_on:
+    - redis
+    - postgresql
+    ports:
+    - "10080:80"
+    - "10022:22"
+    volumes:
+    - /opt/docker/gitlab/storage/gitlab:/home/git/data:Z
+    - /opt/docker/gitlab/storage/registry/certs:/certs:Z
+    environment:
+    - DEBUG=false
+
+    - DB_ADAPTER=postgresql
+    - DB_HOST=postgresql
+    - DB_PORT=5432
+    - DB_USER=gitlab
+    - DB_PASS=password
+    - DB_NAME=gitlabhq_production
+
+    - REDIS_HOST=redis
+    - REDIS_PORT=6379
+
+    - TZ=Europe/Berlin
+    - GITLAB_TIMEZONE=Berlin
+
+    - GITLAB_HTTPS=false
+    - SSL_SELF_SIGNED=false
+
+    - GITLAB_HOST=gitlab.{{ lookup('env', 'CDLAB_BASE_DOMAIN') }}
+    - GITLAB_PORT=10080
+    - GITLAB_SSH_PORT=10022
+    - GITLAB_RELATIVE_URL_ROOT=
+    - GITLAB_SECRETS_DB_KEY_BASE=rtRKnHLKzm7PVLPk9KbbJHnFThrNHW4Psjh3tbgxbNtnpzJrHXXXPmMsKsNkCTgp
+    - GITLAB_SECRETS_OTP_KEY_BASE=35dd1b439e82e722825bd347818e08a07f5ff54b82c0a6b65f4a34636898ca5bcee6acada1ef04b25990290c3514d528dd9a6a3cfde2b3def7ec4b2d6a9e1ed8
+    - GITLAB_SECRETS_SECRET_KEY_BASE=35dd1b439e82e722825bd347818e08a07f5ff54b82c0a6b65f4a34636898ca5bcee6acada1ef04b25990290c3514d528dd9a6a3cfde2b3def7ec4b2d6a9e1ed8
+
+    - GITLAB_ROOT_PASSWORD=21xwiuh47
+    - GITLAB_ROOT_EMAIL=gitlabadmin@{{ lookup('env', 'CDLAB_BASE_DOMAIN') }}
+
+    - GITLAB_NOTIFY_ON_BROKEN_BUILDS=true
+    - GITLAB_NOTIFY_PUSHER=false
+
+    - GITLAB_EMAIL=gitlab@{{ lookup('env', 'CDLAB_BASE_DOMAIN') }}
+    - GITLAB_EMAIL_REPLY_TO=
+    - GITLAB_INCOMING_EMAIL_ADDRESS=gitlab@{{ lookup('env', 'CDLAB_BASE_DOMAIN') }}
+
+    - GITLAB_BACKUP_SCHEDULE=false
+    - GITLAB_BACKUP_TIME=01:00
+    - GITLAB_BACKUP_EXPIRY=1296000 # 15 days
+
+    - GITLAB_SIGNUP_ENABLED=false
+    - GITLAB_PROJECTS_LIMIT=500
+    - GITLAB_USERNAME_CHANGE=false
+    - GITLAB_PROJECTS_ISSUES=false
+    - GITLAB_PROJECTS_WIKI=false
+    - GITLAB_PROJECTS_BUILDS=false
+
+    - GITLAB_REGISTRY_ENABLED=true
+    - GITLAB_REGISTRY_HOST=registry.{{ lookup('env', 'CDLAB_BASE_DOMAIN') }}
+    - GITLAB_REGISTRY_PORT=443
+    - GITLAB_REGISTRY_API_URL=http://registry:5000
+    - GITLAB_REGISTRY_KEY_PATH=/certs/registry.key
+
+    - SMTP_ENABLED=false
+    - SMTP_DOMAIN=
+    - SMTP_HOST=
+    - SMTP_PORT=587
+    - SMTP_USER=
+    - SMTP_PASS=
+    - SMTP_STARTTLS=true
+    - SMTP_AUTHENTICATION=login
+
+    - IMAP_ENABLED=false
+    - IMAP_HOST=
+    - IMAP_PORT=
+    - IMAP_USER=
+    - IMAP_PASS=
+    - IMAP_SSL=true
+    - IMAP_STARTTLS=false
+
+    - LDAP_ENABLED=false
+    - LDAP_HOST=
+    - LDAP_UID=
+    - LDAP_BIND_DN=
+    - LDAP_PASS=
+    - LDAP_ACTIVE_DIRECTORY=
+    - LDAP_BASE=
+
+    - OAUTH_ENABLED=false
+    - OAUTH_AUTO_SIGN_IN_WITH_PROVIDER=
+    - OAUTH_ALLOW_SSO=
+    - OAUTH_BLOCK_AUTO_CREATED_USERS=true
+    - OAUTH_AUTO_LINK_LDAP_USER=false
+    - OAUTH_AUTO_LINK_SAML_USER=false
+    - OAUTH_EXTERNAL_PROVIDERS=
+
+    - OAUTH_CAS3_LABEL=cas3
+    - OAUTH_CAS3_SERVER=
+    - OAUTH_CAS3_DISABLE_SSL_VERIFICATION=false
+    - OAUTH_CAS3_LOGIN_URL=/cas/login
+    - OAUTH_CAS3_VALIDATE_URL=/cas/p3/serviceValidate
+    - OAUTH_CAS3_LOGOUT_URL=/cas/logout
+
+    - OAUTH_GOOGLE_API_KEY=
+    - OAUTH_GOOGLE_APP_SECRET=
+    - OAUTH_GOOGLE_RESTRICT_DOMAIN=
+
+    - OAUTH_FACEBOOK_API_KEY=
+    - OAUTH_FACEBOOK_APP_SECRET=
+
+    - OAUTH_TWITTER_API_KEY=
+    - OAUTH_TWITTER_APP_SECRET=
+
+    - OAUTH_GITHUB_API_KEY=
+    - OAUTH_GITHUB_APP_SECRET=
+    - OAUTH_GITHUB_URL=
+    - OAUTH_GITHUB_VERIFY_SSL=
+
+    - OAUTH_GITLAB_API_KEY=
+    - OAUTH_GITLAB_APP_SECRET=
+
+    - OAUTH_BITBUCKET_API_KEY=
+    - OAUTH_BITBUCKET_APP_SECRET=
+
+    - OAUTH_SAML_ASSERTION_CONSUMER_SERVICE_URL=
+    - OAUTH_SAML_IDP_CERT_FINGERPRINT=
+    - OAUTH_SAML_IDP_SSO_TARGET_URL=
+    - OAUTH_SAML_ISSUER=
+    - OAUTH_SAML_LABEL="Our SAML Provider"
+    - OAUTH_SAML_NAME_IDENTIFIER_FORMAT=urn:oasis:names:tc:SAML:2.0:nameid-format:transient
+    - OAUTH_SAML_GROUPS_ATTRIBUTE=
+    - OAUTH_SAML_EXTERNAL_GROUPS=
+    - OAUTH_SAML_ATTRIBUTE_STATEMENTS_EMAIL=
+    - OAUTH_SAML_ATTRIBUTE_STATEMENTS_NAME=
+    - OAUTH_SAML_ATTRIBUTE_STATEMENTS_USERNAME=
+    - OAUTH_SAML_ATTRIBUTE_STATEMENTS_FIRST_NAME=
+    - OAUTH_SAML_ATTRIBUTE_STATEMENTS_LAST_NAME=
+
+    - OAUTH_CROWD_SERVER_URL=
+    - OAUTH_CROWD_APP_NAME=
+    - OAUTH_CROWD_APP_PASSWORD=
+
+    - OAUTH_AUTH0_CLIENT_ID=
+    - OAUTH_AUTH0_CLIENT_SECRET=
+    - OAUTH_AUTH0_DOMAIN=
+    - OAUTH_AUTH0_SCOPE=
+
+    - OAUTH_AZURE_API_KEY=
+    - OAUTH_AZURE_API_SECRET=
+    - OAUTH_AZURE_TENANT_ID=
+
+  # pgadmin:
+  #   restart: always
+  #   image: dpage/pgadmin4:4.26
+  #   expose:
+  #   - "5050"
+  #   ports:
+  #   - "5050:80"
+  #   environment:
+  #   - PGADMIN_DEFAULT_EMAIL=gitlabadmin@{{ lookup('env', 'CDLAB_BASE_DOMAIN') }}
+  #   - PGADMIN_DEFAULT_PASSWORD=rtRKnHLK

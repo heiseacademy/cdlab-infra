@@ -17,6 +17,7 @@
   vars:
     pip_install_packages:
     - name: docker
+    - name: docker-compose
   import_role:
     name: geerlingguy.pip
 

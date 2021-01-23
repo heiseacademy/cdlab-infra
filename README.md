@@ -27,8 +27,9 @@ Die Installation des CD Labs erfolgt in mehreren Schritten:
 Für das Aufsetzen des CD Labs benötigst Du
 * ein **SSH Key Paar**
 * einen **DigitalOcean Account**
-* einen **Github Account**, der Leserechte auf die Heise Academy Github Organisation heiseacademy/cdlab hat.
 * eine eigene **DNS Domain**
+
+Außerdem musst Du vorab Passwörter für die drei Beispielbenutzer festlegen - sichere Passwörter, da Dein CD Lab frei im Internet steht!
 
 ##### SSH Key
 Die Automatisierungsskripte erwarten einen SSH Key in einem Heise Academy Konfigurationsverzeichnis ```.heiseacademy``` in Deinem Homeverzeichnis.
@@ -52,9 +53,6 @@ Den Token speichere bitte in einer Datei mit dem Namen **DO_API_TOKEN** in Deine
 $ cd ~/.heiseacademy
 $ echo '<dein token>' > DO_API_TOKEN
 ```
-##### Github Account
-Einen Github Account hast Du bereits (sonst könntest Du nicht auf die Heise Academy Repositories zugreifen).
-Bitte hinterlege auch dort den öffentlichen Teil Deines SSH Keys unter ```Benutzermenü -> Settings -> SSH and GPG Keys``` und wähle als Title ```heiseacademy```.
 
 ##### DNS Domain
 Um später alle Labor Server per Letsencrypt mit eigenen ssl-Zertifikaten auszustatten, benötigst Du eine eigene DNS Domain. Es gibt zahlreiche Anbieter, die kostenlose Domain Registrierungen erlauben. Du kannst zum Beispiel [http://www.freenom.com](http://www.freenom.com/de/index.html) nutzen und dort eine Domain Deiner Wahl unter diversen Toplevel Domains (*.tk, *.ml, ...) registrieren.
@@ -71,6 +69,16 @@ $ echo '<meine dns domain>' > CDLAB_BASE_DOMAIN
 $ # zum Beispiel:
 $ # echo 'my-cdlab.tk' > CDLAB_BASE_DOMAIN
 ```
+
+##### Passwörter für Beispielbenutzer admin, tim und lara
+Bitte erstelle die folgenden drei Passwort Dateien in deinem ```~/.heiseacademy``` Verzeichnis:
+```bash
+$ cd ~/.heiseacademy
+$ echo '<random passwd1>' > CDLAB_PASSWORD_ADMIN
+$ echo '<random passwd2>' > CDLAB_PASSWORD_TIM
+$ echo '<random passwd3>' > CDLAB_PASSWORD_LARA
+```
+
 ### Tools
 Für das Setup Deines CD Labs benötigst Du die **Kommandozeilen Tools** [git](), [terraform](https://www.terraform.io/) und [Ansible](https://www.ansible.com/). Optional sind lokale Installationen von [docker](https://docs.docker.com) und [docker-compose](https://docs.docker.com/compose/).
 Als Shell verwendest Du am besten eine [Bash](https://www.gnu.org/software/bash/).

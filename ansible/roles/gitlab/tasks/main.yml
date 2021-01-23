@@ -1,0 +1,122 @@
+---
+- name: Base Domain Variable Check
+  debug:
+    msg: "{{ lookup('env', 'CDLAB_BASE_DOMAIN') }}"
+
+- name: Disable transparent Huge Pages
+  copy:
+    src: files/rc.local
+    dest: /etc/rc.local
+
+- name: Run command to disable transparent Huge Pages
+  command: echo never > /sys/kernel/mm/transparent_hugepage/enabled
+
+- name: Ensure vm.overcommit_memory = 1
+  lineinfile:
+    path: /etc/sysctl.conf
+    regexp: '^vm.overcommit_memory ='
+    line: vm.overcommit_memory = 1
+
+- name: Run command to set vm.overcommit_memory=1
+  command: sysctl vm.overcommit_memory=1
+
+# -----------------------------
+# docker-compose
+# -----------------------------
+
+- name: Create gitlab dir for docker-compose based installation
+  file:
+    path: /opt/docker/gitlab
+    state: directory
+
+- name: Setup gitlab docker-compose file
+  template:
+    src: templates/docker-compose.yml.j2
+    dest: /opt/docker/gitlab/docker-compose.yml
+
+# -----------------------------
+# persistence
+# -----------------------------
+
+- name: Create storage - basedir
+  file:
+    path: /opt/docker/gitlab/storage
+    state: directory
+
+- name: Create storage - letsencrypt 
+  file:
+    path: /opt/docker/gitlab/storage/letsencrypt
+    state: directory
+
+- name: Create storage - gitlab
+  file:
+    path: /opt/docker/gitlab/storage/gitlab
+    state: directory
+    owner: "1000"
+    group: "1000"
+    mode: "0755"
+
+- name: Create storage - postgres
+  file:
+    path: /opt/docker/gitlab/storage/postgres
+    state: directory
+    owner: "101"
+    group: "103"
+    mode: "0755"
+
+- name: Create storage - redis
+  file:
+    path: /opt/docker/gitlab/storage/redis
+    state: directory
+    owner: "101"
+    group: "101"
+    mode: "0755"
+
+- name: Create storage - chartmuseum
+  file:
+    path: /opt/docker/gitlab/storage/chartmuseum
+    state: directory
+    owner: "1000"
+    group: "1000"
+    mode: "0755"
+
+- name: Create storage - charts
+  file:
+    path: /opt/docker/gitlab/storage/chartmuseum/charts
+    state: directory
+    owner: "1000"
+    group: "1000"
+    mode: "0755"
+
+
+- name: Create storage - registry
+  file:
+    path: /opt/docker/gitlab/storage/registry
+    state: directory
+    group: "1000"
+    owner: "1000"
+    mode: "0755"
+
+- name: Create storage - certs
+  file:
+    path: /opt/docker/gitlab/storage/registry/certs
+    state: directory
+    group: "1000"
+    owner: "1000"
+    mode: "0755"
+
+- name: Copy registry cert
+  copy:
+    src: files/registry.crt
+    dest: /opt/docker/gitlab/storage/registry/certs/registry.crt
+    owner: "1000"
+    group: "1000"
+    mode: "0644"
+
+- name: Copy registry key
+  copy:
+    src: files/registry.key
+    dest: /opt/docker/gitlab/storage/registry/certs/registry.key
+    owner: "1000"
+    group: "1000"
+    mode: "0600"

@@ -15,3 +15,8 @@
   roles:
     - role: jenkins
       tags: jenkins
+- name: provision gitlab
+  hosts: gitlab
+  roles:
+    - role: gitlab
+      tags: gitlab

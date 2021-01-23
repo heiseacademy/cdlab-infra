@@ -1,0 +1,23 @@
+jenkins:
+  securityRealm:
+    local:
+      allowsSignup: false
+      users:
+        - id: admin
+          password: "{{ lookup('env', 'CDLAB_PASSWORD_ADMIN') }}"
+        - id: tim
+          password: "{{ lookup('env', 'CDLAB_PASSWORD_TIM') }}"
+        - id: lara
+          password: "{{ lookup('env', 'CDLAB_PASSWORD_LARA') }}"
+  authorizationStrategy:
+    globalMatrix:
+      permissions:
+        - "Overall/Administer:admin"
+        - "Overall/Administer:tim"
+        - "Overall/Administer:lara"
+        - "Overall/Read:authenticated"
+  remotingSecurity:
+    enabled: true
+unclassified:
+  location:
+    url: https://jenkins.{{ lookup('env', 'CDLAB_BASE_DOMAIN') }}/

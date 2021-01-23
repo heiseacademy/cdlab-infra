@@ -1,36 +1,85 @@
 ---
+- name: Base Domain Variable Check
+  debug:
+    msg: "{{ lookup('env', 'CDLAB_BASE_DOMAIN') }}"
+
+- name: Building Jenkins Version
+  debug:
+    msg: "{{ jenkins_version }}"
+
+# -----------------------------
+# docker-compose
+# -----------------------------
+
 - name: Create jenkins dir for docker-compose based installation
   file:
     path: /opt/docker/jenkins
     state: directory
+
+- name: Setup jenkins docker-compose file
+  template:
+    src: templates/docker-compose.yml.j2
+    dest: /opt/docker/jenkins/docker-compose.yml
+
+# -----------------------------
+# build
+# -----------------------------
 
 - name: Create jenkins build dir
   file:
     path: /opt/docker/jenkins/build
     state: directory
 
-- name: Create jenkins storage dir
-  file:
-    path: /opt/docker/jenkins/storage
-    state: directory
-    group: "1000"
-    owner: "1000"
-    mode: "0755"
+- name: Setup jenkins Dockerfile
+  template:
+    src: templates/Dockerfile.j2
+    dest: /opt/docker/jenkins/build/Dockerfile
 
-- name: Copy over docker/jenkins build environment
-  ansible.builtin.copy:
-    src: ../docker/jenkins/
-    dest: /opt/docker/jenkins/build/
+- name: Setup jenkins plugins.txt
+  template:
+    src: templates/plugins.txt.j2
+    dest: /opt/docker/jenkins/build/plugins.txt
+
+- name: Setup jenkins casc.yaml
+  template:
+    src: templates/casc.yaml.j2
+    dest: /opt/docker/jenkins/build/casc.yaml
 
 - name: Build custom jenkins image
   docker_image:
     build:
       path: /opt/docker/jenkins/build
-    name: jenkins:2.275-jcasc
+    name: jenkins:{{ jenkins_version }}-jcasc
     source: build
     state: present
 
-- name: Setup jenkins docker-compose file
-  template:
-    src: templates/docker-compose.yml.j2
-    dest: /opt/docker/jenkins/docker-compose.yml
+# -----------------------------
+# persistence
+# -----------------------------
+
+- name: Create jenkins storage dir
+  file:
+    path: /opt/docker/jenkins/storage
+    state: directory
+
+- name: Create jenkins storage mount dir 
+  file:
+    path: /opt/docker/jenkins/storage/jenkins_home
+    state: directory
+    group: "1000"
+    owner: "1000"
+    mode: "0755"
+
+- name: Create jenkins letsencrypt mount dir 
+  file:
+    path: /opt/docker/jenkins/storage/letsencrypt
+    state: directory
+
+- name: Create and start services
+  community.general.docker_compose:
+    project_src: /opt/docker/jenkins
+  register: output
+
+- name: Debug docker-compose up
+  debug:
+    var: output

@@ -18,7 +18,7 @@ resource "digitalocean_project" "cdlab" {
 }
 
 resource "digitalocean_domain" "cdlab" {
-  name    = "cdlab.${var.cdlab_base_domain}"
+  name    = var.cdlab_base_domain
 }
 
 # -------------------------------------------
@@ -36,7 +36,7 @@ resource "digitalocean_droplet" "jenkins" {
 }
 
 resource "digitalocean_record" "a-record-jenkins" {
-  domain = "cdlab.${var.cdlab_base_domain}"
+  domain = var.cdlab_base_domain
   type   = "A"
   ttl    = "300"
   name   = "jenkins"
@@ -58,9 +58,34 @@ resource "digitalocean_droplet" "gitlab" {
 }
 
 resource "digitalocean_record" "a-record-gitlab" {
-  domain = "cdlab.${var.cdlab_base_domain}"
+  domain = var.cdlab_base_domain
   type   = "A"
   ttl    = "300"
   name   = "gitlab"
+  value  = digitalocean_droplet.gitlab.ipv4_address
+}
+
+resource "digitalocean_record" "a-record-gitlab-registry" {
+  domain = var.cdlab_base_domain
+  type   = "A"
+  ttl    = "300"
+  name   = "registry"
+  value  = digitalocean_droplet.gitlab.ipv4_address
+}
+
+resource "digitalocean_record" "a-record-gitlab-chartmuseum" {
+  domain = var.cdlab_base_domain
+  type   = "A"
+  ttl    = "300"
+  name   = "helm"
+  value  = digitalocean_droplet.gitlab.ipv4_address
+}
+
+# @-Record for cdlab_base_domain points to gitlab
+resource "digitalocean_record" "at-record-cdlab" {
+  domain = var.cdlab_base_domain
+  type   = "A"
+  ttl    = "300"
+  name   = "@"
   value  = digitalocean_droplet.gitlab.ipv4_address
 }
