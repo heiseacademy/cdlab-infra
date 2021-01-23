@@ -1,0 +1,36 @@
+---
+- name: Create jenkins dir for docker-compose based installation
+  file:
+    path: /opt/docker/jenkins
+    state: directory
+
+- name: Create jenkins build dir
+  file:
+    path: /opt/docker/jenkins/build
+    state: directory
+
+- name: Create jenkins storage dir
+  file:
+    path: /opt/docker/jenkins/storage
+    state: directory
+    group: "1000"
+    owner: "1000"
+    mode: "0755"
+
+- name: Copy over docker/jenkins build environment
+  ansible.builtin.copy:
+    src: ../docker/jenkins/
+    dest: /opt/docker/jenkins/build/
+
+- name: Build custom jenkins image
+  docker_image:
+    build:
+      path: /opt/docker/jenkins/build
+    name: jenkins:2.275-jcasc
+    source: build
+    state: present
+
+- name: Setup jenkins docker-compose file
+  template:
+    src: templates/docker-compose.yml.j2
+    dest: /opt/docker/jenkins/docker-compose.yml

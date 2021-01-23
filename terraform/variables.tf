@@ -1,3 +1,3 @@
-variable "do_token" {}
+variable "do_api_token" {}
 variable "do_ssh_key" {}
-variable "base_domain" {}
+variable "cdlab_base_domain" {}

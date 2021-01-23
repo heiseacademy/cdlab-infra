@@ -5,7 +5,13 @@
     - name: Update repositories cache
       apt:
         update_cache: yes
-  vars_files:
-    - "./vars/users.yml"
+  # vars_files:
+  #   - "./vars/users.yml"
   roles:
-    - common
+    - role: common
+      tags: docker, common
+- name: provision jenkins
+  hosts: jenkins
+  roles:
+    - role: jenkins
+      tags: jenkins

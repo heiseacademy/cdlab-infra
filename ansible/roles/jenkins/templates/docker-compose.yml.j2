@@ -1,0 +1,13 @@
+version: '3.3'
+services:
+  jenkins:
+    restart: always
+    image: 'jenkins:2.275-jcasc'
+    ports:
+      - '9080:8080'
+      - '50000:50000'
+    volumes:
+      - '/opt/docker/jenkins/storage/jenkins_home:/var/jenkins_home'
+volumes:
+  jenkins_data:
+    driver: local
