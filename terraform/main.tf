@@ -77,7 +77,7 @@ resource "digitalocean_record" "a-record-gitlab-chartmuseum" {
   domain = var.cdlab_base_domain
   type   = "A"
   ttl    = "300"
-  name   = "helm"
+  name   = "helmrepo"
   value  = digitalocean_droplet.gitlab.ipv4_address
 }
 

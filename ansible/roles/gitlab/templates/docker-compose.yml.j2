@@ -10,9 +10,9 @@ services:
       - "--providers.docker.exposedbydefault=false"
       - "--entrypoints.websecure.address=:443"
       - "--certificatesresolvers.myresolver.acme.tlschallenge=true"
-      - "--certificatesresolvers.myresolver.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory"
-      - "--certificatesresolvers.myresolver.acme.email=postmaster@{{ lookup('env', 'CDLAB_BASE_DOMAIN') }}"
+      - "--certificatesresolvers.myresolver.acme.caserver=https://acme-v02.api.letsencrypt.org/directory"
       - "--certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json"
+      - "--certificatesresolvers.myresolver.acme.email=postmaster@{{ lookup('env', 'CDLAB_BASE_DOMAIN') }}"
     ports:
       - "443:443"
       - "8080:8080"
@@ -41,6 +41,13 @@ services:
 
   registry:
     image: registry:2.7.1
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.registry.rule=Host(`registry.{{ lookup('env', 'CDLAB_BASE_DOMAIN') }}`)"
+      - "traefik.http.routers.registry.entrypoints=websecure"
+      - "traefik.http.routers.registry.tls.certresolver=myresolver"
+      - "traefik.http.routers.registry.service=registry"
+      - "traefik.http.services.registry.loadbalancer.server.port=5000"
     restart: always
     expose:
     - "5000"
@@ -60,6 +67,13 @@ services:
 
   chartmuseum:
     image: chartmuseum/chartmuseum:v0.11.0
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.helmrepo.rule=Host(`helmrepo.{{ lookup('env', 'CDLAB_BASE_DOMAIN') }}`)"
+      - "traefik.http.routers.helmrepo.entrypoints=websecure"
+      - "traefik.http.routers.helmrepo.tls.certresolver=myresolver"
+      - "traefik.http.routers.helmrepo.service=registry"
+      - "traefik.http.services.helmrepo.loadbalancer.server.port=8080"
     restart: always
     expose:
     - "7080"
@@ -71,17 +85,19 @@ services:
     - DEBUG=1
     - STORAGE=local
     - STORAGE_LOCAL_ROOTDIR=/charts
-    - BASIC_AUTH_USER=chartmuseum
-    - BASIC_AUTH_PASS=xgfdxb32761
+    - BASIC_AUTH_USER=helm
+    - BASIC_AUTH_PASS={{ lookup('env', 'CDLAB_ADMIN_PASSWORD') }}
 
   gitlab:
     restart: always
-    image: sameersbn/gitlab:13.7.3
+    image: sameersbn/gitlab:13.7.4
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.gitlab.rule=Host(`gitlab.{{ lookup('env', 'CDLAB_BASE_DOMAIN') }}`)"
-      - "traefik.http.routers.gitlab.entrypoints=websecure"
-      - "traefik.http.routers.gitlab.tls.certresolver=myresolver"
+      - "traefik.http.routers.gitlab-www.rule=Host(`gitlab.{{ lookup('env', 'CDLAB_BASE_DOMAIN') }}`)"
+      - "traefik.http.routers.gitlab-www.entrypoints=websecure"
+      - "traefik.http.routers.gitlab-www.tls.certresolver=myresolver"
+      - "traefik.http.routers.gitlab-www.service=gitlab-www"
+      - "traefik.http.services.gitlab-www.loadbalancer.server.port=80"
     depends_on:
     - redis
     - postgresql
@@ -118,7 +134,7 @@ services:
     - GITLAB_SECRETS_OTP_KEY_BASE=35dd1b439e82e722825bd347818e08a07f5ff54b82c0a6b65f4a34636898ca5bcee6acada1ef04b25990290c3514d528dd9a6a3cfde2b3def7ec4b2d6a9e1ed8
     - GITLAB_SECRETS_SECRET_KEY_BASE=35dd1b439e82e722825bd347818e08a07f5ff54b82c0a6b65f4a34636898ca5bcee6acada1ef04b25990290c3514d528dd9a6a3cfde2b3def7ec4b2d6a9e1ed8
 
-    - GITLAB_ROOT_PASSWORD=21xwiuh47
+    - GITLAB_ROOT_PASSWORD={{ lookup('env', 'CDLAB_ADMIN_PASSWORD') }}
     - GITLAB_ROOT_EMAIL=gitlabadmin@{{ lookup('env', 'CDLAB_BASE_DOMAIN') }}
 
     - GITLAB_NOTIFY_ON_BROKEN_BUILDS=true
