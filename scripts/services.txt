@@ -1,0 +1,4 @@
+ssh://gitlab.__CDLAB_BASE_DOMAIN__:10022/
+https://gitlab.__CDLAB_BASE_DOMAIN__:443/users/sign_in
+https://registry.__CDLAB_BASE_DOMAIN__:443/
+https://helmrepo.__CDLAB_BASE_DOMAIN__:443/
