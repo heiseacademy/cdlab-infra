@@ -88,7 +88,6 @@
     group: "1000"
     mode: "0755"
 
-
 - name: Create storage - registry
   file:
     path: /opt/docker/gitlab/storage/registry
@@ -120,3 +119,11 @@
     owner: "1000"
     group: "1000"
     mode: "0600"
+
+# -----------------------------
+# Start Sercices
+# -----------------------------
+
+- name: Create and start services
+  community.general.docker_compose:
+    project_src: /opt/docker/gitlab

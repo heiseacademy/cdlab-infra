@@ -75,11 +75,15 @@
     path: /opt/docker/jenkins/storage/letsencrypt
     state: directory
 
+# -----------------------------
+# Start Sercices
+# -----------------------------
+
 - name: Create and start services
   community.general.docker_compose:
     project_src: /opt/docker/jenkins
-  register: output
+  # register: output
 
-- name: Debug docker-compose up
-  debug:
-    var: output
+# - name: Debug docker-compose up
+#   debug:
+#     var: output
