@@ -90,7 +90,7 @@ services:
 
   gitlab:
     restart: always
-    image: sameersbn/gitlab:13.7.4
+    image: sameersbn/gitlab:{{ gitlab_version }}
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.gitlab-www.rule=Host(`gitlab.{{ lookup('env', 'CDLAB_BASE_DOMAIN') }}`)"
