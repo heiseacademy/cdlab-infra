@@ -56,9 +56,9 @@
     group: "1000"
     mode: "0755"
 
-- name: Create storage - postgres
+- name: Create storage - postgresql
   file:
-    path: /opt/docker/gitlab/storage/postgres
+    path: /opt/docker/gitlab/storage/postgresql
     state: directory
     owner: "101"
     group: "103"
