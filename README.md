@@ -113,26 +113,33 @@ Die [terraform CLI](https://www.terraform.io) (Version >= 0.14.4) findest Du als
 
 [https://www.terraform.io/downloads.html](https://www.terraform.io/downloads.html)
 
-Mit ```terraform version``` kannst Du die Installation testen: 
+Alternativ zur ativen Installation von terraform kannst Du auch ein terraform Dockerimage nutzen: Im Verzeichnis terraform/ findest Du einen passenden docker-basierten terraform Wrapper:
+
 ```bash
-$ terraform version
-Terraform v0.14.4
+$ cd terraform
+$ terraform-w version
+Terraform v0.14.7
 ```
 
 #### Ansible
 
-Die Installtion von **Ansible** (Version >= 2.10.5) ist hier beschrieben:
+Die Installation von **Ansible** (Version >= 2.10.4, < 3.0.0) ist hier beschrieben:
 
 [https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html)
 
-Mit ```ansible --version``` kannst Du die Installation überprüfen:
+Da die Installation unter Windows 10 relativ aufwändig ist, liegen im Unterverzeichnis ansible zwei docker-basierte Ansible Wrapper bereit:
 
 ```bash
-$ ansible --version
-ansible 2.10.5
-  config file = ~/.ansible.cfg
-  configured module search path = ['~/.ansible/plugins/modules', '/usr/share/ansible/plugins/modules']
-  ansible python module location = ~/.virtualenvs/cdlab-infra/lib/python3.8/site-packages/ansible
-  executable location = ~/.virtualenvs/cdlab-infra/bin/ansible
-  python version = 3.8.1 (default, Jan  8 2020, 16:24:34) [Clang 11.0.0 (clang-1100.0.33.16)]
+$ cd ansible
+$ ./ansible-w --version
+ansible 2.10.4
+  config file = /ansible/ansible.cfg
+  [...]
+
+$ ./ansible-playbook-w --version
+ansible-playbook 2.10.4
+  config file = /ansible/ansible.cfg
+  [...]
 ```
+## VMs erzeugen mit **terraform** 
+## VMs provisionieren mit **ansible**
