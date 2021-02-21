@@ -3,6 +3,8 @@ services:
   traefik:
     image: "traefik:v2.4"
     container_name: "traefik"
+    depends_on:
+      - jenkins
     command:
       #- "--log.level=DEBUG"
       - "--api.insecure=true"

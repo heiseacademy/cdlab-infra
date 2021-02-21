@@ -1,2 +1,6 @@
 alias "ssh-cdlab-jenkins"="ssh -i ~/.heiseacademy/id_rsa -F /dev/null root@jenkins.$(< ~/.heiseacademy/CDLAB_BASE_DOMAIN)"
 alias "ssh-cdlab-gitlab"="ssh -i ~/.heiseacademy/id_rsa -F /dev/null root@gitlab.$(< ~/.heiseacademy/CDLAB_BASE_DOMAIN)"
+alias "ssh-cdlab-dockerhost-dev"="ssh -i ~/.heiseacademy/id_rsa -F /dev/null root@dockerhost.dev.$(< ~/.heiseacademy/CDLAB_BASE_DOMAIN)"
+alias "ssh-cdlab-dockerhost-ci"="ssh -i ~/.heiseacademy/id_rsa -F /dev/null root@dockerhost.ci.$(< ~/.heiseacademy/CDLAB_BASE_DOMAIN)"
+alias "ssh-cdlab-dockerhost-staging"="ssh -i ~/.heiseacademy/id_rsa -F /dev/null root@dockerhost.staging.$(< ~/.heiseacademy/CDLAB_BASE_DOMAIN)"
+alias "ssh-cdlab-dockerhost-prod"="ssh -i ~/.heiseacademy/id_rsa -F /dev/null root@dockerhost.prod.$(< ~/.heiseacademy/CDLAB_BASE_DOMAIN)"

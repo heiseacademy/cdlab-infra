@@ -3,19 +3,8 @@ data "digitalocean_ssh_key" "ssh_key" {
 }
 
 # -------------------------------------------
-# Digital Ocean Project
+# Digital Ocean DNS
 # -------------------------------------------
-
-resource "digitalocean_project" "cdlab" {
-  name        = "cdlab"
-  description = "Heise Academy - CD Lab"
-  environment = "Production"
-  resources   = [
-    digitalocean_domain.cdlab.urn,
-    digitalocean_droplet.jenkins.urn,
-    digitalocean_droplet.gitlab.urn,
-  ]
-}
 
 resource "digitalocean_domain" "cdlab" {
   name    = var.cdlab_base_domain

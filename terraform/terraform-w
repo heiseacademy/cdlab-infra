@@ -4,6 +4,7 @@ DOCKER_TERRAFORM=hashicorp/terraform:0.14.7
 HA_CONFIG_FOLDER=~/.heiseacademy
 
 ENVS=""
+ENVS="$ENVS -e TF_VAR_stage=$STAGE"
 ENVS="$ENVS -e TF_VAR_do_api_token=$(<$HA_CONFIG_FOLDER/DO_API_TOKEN)"
 ENVS="$ENVS -e TF_VAR_cdlab_base_domain=$(<$HA_CONFIG_FOLDER/CDLAB_BASE_DOMAIN)"
 ENVS="$ENVS -e TF_VAR_do_ssh_key=heiseacademy"

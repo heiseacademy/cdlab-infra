@@ -60,10 +60,11 @@ echo $DO_API_TOKEN > $HA_CONFIG_FOLDER/DO_API_TOKEN
 # ------------- Save CDLab Base Domnain
 echo $CDLAB_BASE_DOMAIN > $HA_CONFIG_FOLDER/CDLAB_BASE_DOMAIN
 
-# ------------- Create SSH Keypair
+# ------------- Create Provisioning & Serviceuser SSH Keypair
 OLD_PWD=$(pwd)
 cd $HA_CONFIG_FOLDER
 ssh-keygen -t rsa -b 4096 -f id_rsa -N ''
+ssh-keygen -t rsa -b 4096 -f id_rsa-serviceuser -N ''
 cd $OLD_PWD
 
 # ------------- Print Results

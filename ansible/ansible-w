@@ -9,7 +9,7 @@ ENVS="$ENVS -e CDLAB_PASSWORD_ADMIN=$(<$HA_CONFIG_FOLDER/CDLAB_PASSWORD_ADMIN)"
 ENVS="$ENVS -e CDLAB_PASSWORD_LARA=$(<$HA_CONFIG_FOLDER/CDLAB_PASSWORD_LARA)"
 ENVS="$ENVS -e CDLAB_PASSWORD_TIM=$(<$HA_CONFIG_FOLDER/CDLAB_PASSWORD_TIM)"
 ENVS="$ENVS -e DO_API_TOKEN=$(<$HA_CONFIG_FOLDER/DO_API_TOKEN)"
-ENVS="$ENVS -e ANSIBLE_SSH_ARGS=-i/root/id_rsa"
+ENVS="$ENVS -e ANSIBLE_SSH_ARGS=-i/root/.heiseacademy/id_rsa"
 
-docker run --rm -it -v $(pwd):/ansible -v $HA_CONFIG_FOLDER/id_rsa:/root/id_rsa $ENVS $DOCKER_ANSIBLE ansible $@
+docker run --rm -it -v $(pwd):/ansible -v $HA_CONFIG_FOLDER:/root/.heiseacademy $ENVS $DOCKER_ANSIBLE ansible $@
 

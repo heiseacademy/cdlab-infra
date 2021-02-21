@@ -25,21 +25,22 @@ Die Installation des CD Labs erfolgt in mehreren Schritten:
 
 ### Voraussetzungen
 Für das Aufsetzen des CD Labs benötigst Du
-* ein **SSH Key Paar**
+* zwei **SSH Key Paare** (Provisioning User & Service User)
 * einen **DigitalOcean Account**
 * eine eigene **DNS Domain**
 
 Außerdem musst Du vorab Passwörter für die drei Beispielbenutzer festlegen - sichere Passwörter, da Dein CD Lab frei im Internet steht!
 
-##### SSH Key
-Die Automatisierungsskripte erwarten einen SSH Key in einem Heise Academy Konfigurationsverzeichnis ```.heiseacademy``` in Deinem Homeverzeichnis.
+##### SSH Keys
+Die Automatisierungsskripte erwarten zwei SSH Keys in einem Heise Academy Konfigurationsverzeichnis ```.heiseacademy``` in Deinem Homeverzeichnis.
 
-Auf der Kommandozeile (Git Bash unter Windows) kannst Du das Verzeichnis und einen SSH Key so erstellen:
+Auf der Kommandozeile (Git Bash unter Windows) kannst Du das Verzeichnis und die SSH Keys so erstellen:
 ```bash
 $ cd ~
 $ mkdir .heiseacademy
 $ cd .heiseacademy
 $ ssh-keygen -t rsa -b 4096 -f id_rsa -N ''
+$ ssh-keygen -t rsa -b 4096 -f id_rsa-serviceuser -N ''
 ```
 ##### DigitalOcean Account, SSH Key und Personal Access Token
 Deinen DigitalOcean Account kannst Du Dir hier erzeugen: [https://cloud.digitalocean.com/registrations/new](https://cloud.digitalocean.com/registrations/new)
