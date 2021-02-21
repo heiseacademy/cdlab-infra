@@ -76,6 +76,16 @@
     state: directory
 
 # -----------------------------
+# Jenkins setup
+# -----------------------------
+- name: Setup locale
+  template:
+    src: templates/locale.xml.j2
+    dest: /opt/docker/jenkins/storage/jenkins_home/locale.xml
+    group: "1000"
+    owner: "1000"
+
+# -----------------------------
 # Start Sercices
 # -----------------------------
 

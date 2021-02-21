@@ -1,4 +1,5 @@
 ---
 # Jenkins Version
 jenkins_version: "2.280"
+plugin_locale_version: "1.4"
   
