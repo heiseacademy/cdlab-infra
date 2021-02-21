@@ -1,4 +1,4 @@
-version: '3.3'
+version: "3.3"
 services:
   traefik:
     image: "traefik:v2.4"
@@ -25,15 +25,16 @@ services:
 
   jenkins:
     restart: always
-    image: 'jenkins:{{ jenkins_version }}-jcasc'
+    image: "jenkins:{{ jenkins_version }}-jcasc"
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.jenkins.rule=Host(`jenkins.{{ lookup('env', 'CDLAB_BASE_DOMAIN') }}`)"
       - "traefik.http.routers.jenkins.entrypoints=websecure"
       - "traefik.http.routers.jenkins.tls.certresolver=myresolver"
     ports:
-      - '9080:8080'
-      - '50000:50000'
+      - "9080:8080"
+      - "50000:50000"
     volumes:
-      - './storage/jenkins_home:/var/jenkins_home'
+      - "./storage/jenkins_home:/var/jenkins_home"
+      - "/var/run/docker.sock:/var/run/docker.sock"
 

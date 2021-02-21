@@ -1,7 +1,22 @@
 FROM jenkins/jenkins:{{ jenkins_version }}
+ARG DOCKER_GROUP_ID
 ENV JAVA_OPTS -Djenkins.install.runSetupWizard=false
 ENV CASC_JENKINS_CONFIG /usr/share/jenkins/ref/casc.yaml
 
 COPY plugins.txt /usr/share/jenkins/ref/plugins.txt
 RUN /usr/local/bin/install-plugins.sh < /usr/share/jenkins/ref/plugins.txt
 COPY casc.yaml /usr/share/jenkins/ref/casc.yaml
+
+USER root
+RUN groupadd -g $DOCKER_GROUP_ID docker && \
+  usermod -aG docker jenkins && \
+  apt-get -y update && \
+  apt-get -y install apt-transport-https ca-certificates curl gnupg-agent software-properties-common && \
+  curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add - && \
+  add-apt-repository \
+  "deb [arch=amd64] https://download.docker.com/linux/$(. /etc/os-release; echo $ID) \
+  $(lsb_release -cs) \
+  stable" && \
+  apt-get update && \
+  apt-get -y install docker-ce docker-ce-cli containerd.io
+USER jenkins
