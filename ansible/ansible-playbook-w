@@ -1,7 +1,7 @@
 #!/bin/bash
 
 DOCKER_ANSIBLE=birka/ansible:2.10.4
-HA_CONFIG_FOLDER=~/.heiseacademy
+HA_CONFIG_FOLDER=$HOME/.heiseacademy
 
 ENVS=""
 ENVS="$ENVS -e CDLAB_BASE_DOMAIN=$(<$HA_CONFIG_FOLDER/CDLAB_BASE_DOMAIN)"
@@ -11,5 +11,5 @@ ENVS="$ENVS -e CDLAB_PASSWORD_TIM=$(<$HA_CONFIG_FOLDER/CDLAB_PASSWORD_TIM)"
 ENVS="$ENVS -e DO_API_TOKEN=$(<$HA_CONFIG_FOLDER/DO_API_TOKEN)"
 ENVS="$ENVS -e ANSIBLE_SSH_ARGS=-i/root/.heiseacademy/id_rsa"
 
-docker run --rm -it -v $(pwd):/ansible -v $HA_CONFIG_FOLDER:/root/.heiseacademy $ENVS $DOCKER_ANSIBLE ansible-playbook $@
+docker run --rm -it -v $PWD:/ansible -v $HA_CONFIG_FOLDER:/root/.heiseacademy $ENVS $DOCKER_ANSIBLE ansible-playbook $@
 

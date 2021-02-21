@@ -46,15 +46,15 @@
     dest: /opt/docker/jenkins/build/casc.yaml
 
 - name: get docker group id
-  command: "getent group docker | awk -F: '{ print $3;}'"
+  shell: "getent group docker|cut -d: -f3"
   register: docker_gid
 
 - name: Build custom jenkins image
   docker_image:
     build:
       path: /opt/docker/jenkins/build
-      buildargs:
-        DOCKER_GROUP_ID: {{ docker_gid.stdout }}
+      args:
+        DOCKER_GROUP_ID: "{{ docker_gid.stdout }}"
     name: jenkins:{{ jenkins_version }}-jcasc
     source: build
     state: present
