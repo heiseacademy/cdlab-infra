@@ -54,10 +54,14 @@ for L in $(< $PWD/services.txt);do
       exit 1
     esac
 done
-echo "==========================="
+
 echo "OVERALL EXIT CODE: $OVERALL_EXIT_CODE"
-if [ $OVERALL_EXIT_CODE -eq 1 ];then
-  echo "Tests FAILED!"
-fi
+echo "==========================="
+if [ $OVERALL_EXIT_CODE -eq 0 ];then
+  echo "SUCCESS: ALL SERVICES UP AND RUNNING."
+else
+  echo "FAIL: SOME SERVICES ARE NOT WORKING CORRECTLY!"
+fi  
+echo "==========================="
 
 exit $OVERALL_EXIT_CODE

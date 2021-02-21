@@ -68,6 +68,7 @@ cd $OLD_PWD
 
 # ------------- Print Results
 echo
+echo "==========================="
 echo "Attention:"
 echo "Please copy this public ssh-key into your DigitalOcean account and name it \"heiseacademy\"!"
 echo "DigitalOcean.com -> Account -> Settings -> Security -> SSH Keys"
@@ -79,3 +80,5 @@ echo "Passwort for Jenkins User admin: $CDLAB_PASSWORD_ADMIN"
 echo "Passwort for Gitlab User root:   $CDLAB_PASSWORD_ADMIN"
 echo "Password for Jenkins & Gitlab User lara: $CDLAB_PASSWORD_LARA"
 echo "Password for Jenkins & Gitlab User tim:  $CDLAB_PASSWORD_TIM"
+echo
+echo "==========================="
