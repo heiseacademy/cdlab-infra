@@ -2,11 +2,40 @@
 
 DOCKER_TERRAFORM=hashicorp/terraform:0.14.7
 HA_CONFIG_FOLDER=$HOME/.heiseacademy
+DOCKER_JENKINS_MODE=0
+
+while [ $# -gt 0 ];do
+  key="$1"
+  case $key in
+    --docker-jenkins-mode)
+    DOCKER_JENKINS_MODE=1
+    shift
+    ;;
+    -j)
+    DOCKER_JENKINS_MODE=1
+    shift
+    ;;
+    *)    # unknown option
+    POSITIONAL+=("$1") # save it in an array for later
+    shift # past argument
+    ;;
+  esac
+done
+set -- "${POSITIONAL[@]}" # restore positional parameters
 
 ENVS=""
 ENVS="$ENVS -e TF_VAR_stage=$STAGE"
-ENVS="$ENVS -e TF_VAR_do_api_token=$(<$HA_CONFIG_FOLDER/DO_API_TOKEN)"
-ENVS="$ENVS -e TF_VAR_cdlab_base_domain=$(<$HA_CONFIG_FOLDER/CDLAB_BASE_DOMAIN)"
+ENVS="$ENVS -e TF_VAR_do_api_token=$(cat $HA_CONFIG_FOLDER/DO_API_TOKEN)"
+ENVS="$ENVS -e TF_VAR_cdlab_base_domain=$(cat $HA_CONFIG_FOLDER/CDLAB_BASE_DOMAIN)"
 ENVS="$ENVS -e TF_VAR_do_ssh_key=heiseacademy"
 
-docker run --rm -it $ENVS -v $PWD:/workspace -w /workspace $DOCKER_TERRAFORM $@
+MOUNTS="-v $PWD:/workspace"
+CHDIR="/workspace"
+
+if [ $DOCKER_JENKINS_MODE -eq 1 ];then
+  ENVS="$ENVS -e TF_IN_AUTOMATION=1"
+  MOUNTS="--volumes-from=$(hostname)"
+  CHDIR="$PWD"
+fi
+
+docker run --rm $ENVS $MOUNTS $DOCKER_TERRAFORM -chdir=$CHDIR $@
