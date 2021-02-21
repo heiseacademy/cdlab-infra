@@ -1,0 +1,147 @@
+<?xml version='1.1' encoding='UTF-8'?>
+<project>
+  <actions/>
+  <description>Create docker-compose based Deployment Environments for the Tutorials App. </description>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <com.dabsquared.gitlabjenkins.connection.GitLabConnectionProperty plugin="gitlab-plugin@1.5.13">
+      <gitLabConnection></gitLabConnection>
+    </com.dabsquared.gitlabjenkins.connection.GitLabConnectionProperty>
+    <com.sonyericsson.rebuild.RebuildSettings plugin="rebuild@1.31">
+      <autoRebuild>false</autoRebuild>
+      <rebuildDisabled>false</rebuildDisabled>
+    </com.sonyericsson.rebuild.RebuildSettings>
+    <hudson.model.ParametersDefinitionProperty>
+      <parameterDefinitions>
+        <hudson.model.ChoiceParameterDefinition>
+          <name>ACTION</name>
+          <description>Create or delete an envrionment?</description>
+          <choices class="java.util.Arrays$ArrayList">
+            <a class="string-array">
+              <string>create</string>
+              <string>delete</string>
+            </a>
+          </choices>
+        </hudson.model.ChoiceParameterDefinition>
+        <hudson.model.ChoiceParameterDefinition>
+          <name>STAGE</name>
+          <description>Stage of the Environment</description>
+          <choices class="java.util.Arrays$ArrayList">
+            <a class="string-array">
+              <string>dev</string>
+              <string>ci</string>
+              <string>staging</string>
+              <string>prod</string>
+            </a>
+          </choices>
+        </hudson.model.ChoiceParameterDefinition>
+      </parameterDefinitions>
+    </hudson.model.ParametersDefinitionProperty>
+  </properties>
+  <scm class="hudson.plugins.git.GitSCM" plugin="git@4.6.0">
+    <configVersion>2</configVersion>
+    <userRemoteConfigs>
+      <hudson.plugins.git.UserRemoteConfig>
+        <url>https://git.pingworks.net/trainings/cdlab/tutorials-envs.git</url>
+      </hudson.plugins.git.UserRemoteConfig>
+    </userRemoteConfigs>
+    <branches>
+      <hudson.plugins.git.BranchSpec>
+        <name>*/main</name>
+      </hudson.plugins.git.BranchSpec>
+    </branches>
+    <doGenerateSubmoduleConfigurations>false</doGenerateSubmoduleConfigurations>
+    <submoduleCfg class="empty-list"/>
+    <extensions/>
+  </scm>
+  <canRoam>true</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <triggers/>
+  <concurrentBuild>false</concurrentBuild>
+  <builders>
+    <hudson.tasks.Shell>
+      <command>set -e
+set +x
+
+cd docker-compose-based
+
+DOCKER_TERRAFORM=hashicorp/terraform:0.14.7
+HA_CONFIG_FOLDER=$JENKINS_HOME/.heiseacademy
+
+TARGET_HOST=&quot;dockerhost.$STAGE.$(cat $HA_CONFIG_FOLDER/CDLAB_BASE_DOMAIN)&quot;
+
+echo &quot;------------------------------------&quot;
+echo &quot;${ACTION}-ing Environment&quot;
+echo &quot;STAGE: $STAGE&quot;
+echo &quot;TARGET_HOST: $TARGET_HOST&quot;
+echo &quot;------------------------------------&quot;
+
+curl -sS &quot;https://api.digitalocean.com/v2/droplets&quot; -H &quot;Authorization: Bearer $(cat $HA_CONFIG_FOLDER/DO_API_TOKEN)&quot; | jq -r .droplets[].name &gt; droplets.txt
+
+if [ &quot;$ACTION&quot; = &quot;create&quot; ];then
+  if grep dockerhost-$STAGE droplets.txt;then
+  	echo &quot;WARN: Droplet dockerhost-$STAGE already exists!&quot;
+    exit 0
+  fi
+
+  echo &quot;----------------------------------------------------&quot;
+  echo &quot;Creating DigitalOcean Droplet $TARGET_HOST with Terraform...&quot;
+  echo &quot;----------------------------------------------------&quot;
+
+  cd terraform
+  [ -f tfplan ] &amp;&amp; rm -f tfplan || true
+  [ -f terraform.tfstate ] &amp;&amp; rm -f terraform.tfstate || true
+  [ -f terraform.tfstate.backup ] &amp;&amp; rm -f terraform.tfstate.backup || true
+
+  ./terraform-w -j version
+  ./terraform-w -j init -input=false
+  ./terraform-w -j plan -out=tfplan -input=false
+  ./terraform-w -j apply -input=false tfplan
+
+  mv terraform.tfstate $TARGET_HOST.terraform.tfstate
+
+  echo &quot;----------------------------------------------------&quot;
+  echo &quot;Provisioning target host $TARGET_HOST with ansible...&quot;
+  echo &quot;----------------------------------------------------&quot;
+
+  # cd ../ansible
+  # ./ansible-playbook-w -i digital_ocean.py dockerhost.yml
+fi
+
+
+if [ &quot;$ACTION&quot; = &quot;delete&quot; ];then
+  if grep dockerhost-$STAGE droplets.txt;then
+
+    echo &quot;----------------------------------------------------&quot;
+    echo &quot;Deleting DigitalOcean Droplet $TARGET_HOST with Terraform...&quot;
+    echo &quot;----------------------------------------------------&quot;
+
+  	cd terraform
+  	[ -f tfplan ] &amp;&amp; rm -f tfplan || true
+ 	[ -f terraform.tfstate ] &amp;&amp; rm -f terraform.tfstate || true
+  	[ -f terraform.tfstate.backup ] &amp;&amp; rm -f terraform.tfstate.backup || true
+
+    [ -f $TARGET_HOST.terraform.tfstate ] &amp;&amp; mv $TARGET_HOST.terraform.tfstate terraform.tfstate || true
+
+  	./terraform-w -j destroy -auto-approve
+
+  else
+    echo &quot;WARN: Droplet dockerhost-$STAGE not found!&quot;
+    exit 0
+  fi
+fi
+
+
+</command>
+      <configuredLocalRules/>
+    </hudson.tasks.Shell>
+  </builders>
+  <publishers/>
+  <buildWrappers>
+    <hudson.plugins.ansicolor.AnsiColorBuildWrapper plugin="ansicolor@0.7.5">
+      <colorMapName>xterm</colorMapName>
+    </hudson.plugins.ansicolor.AnsiColorBuildWrapper>
+  </buildWrappers>
+</project>

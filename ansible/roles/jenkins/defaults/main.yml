@@ -1,7 +1,5 @@
 ---
 # Jenkins Version
 jenkins_version: "2.280"
-plugin_locale_version: "1.4"
-plugin_gitlab_version: "1.5.13"
-plugin_git_version: "4.6.0"
+
   
