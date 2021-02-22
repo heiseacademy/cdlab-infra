@@ -2,14 +2,42 @@
 
 DOCKER_ANSIBLE=birka/ansible:2.10.4
 HA_CONFIG_FOLDER=$HOME/.heiseacademy
+DOCKER_JENKINS_MODE=0
+
+while [ $# -gt 0 ];do
+  key="$1"
+  case $key in
+    --docker-jenkins-mode)
+    DOCKER_JENKINS_MODE=1
+    shift
+    ;;
+    -j)
+    DOCKER_JENKINS_MODE=1
+    shift
+    ;;
+    *)    # unknown option
+    POSITIONAL+=("$1") # save it in an array for later
+    shift # past argument
+    ;;
+  esac
+done
+set -- "${POSITIONAL[@]}" # restore positional parameters
 
 ENVS=""
+ENVS="$ENVS -e STAGE=$STAGE"
 ENVS="$ENVS -e CDLAB_BASE_DOMAIN=$(<$HA_CONFIG_FOLDER/CDLAB_BASE_DOMAIN)"
 ENVS="$ENVS -e CDLAB_PASSWORD_ADMIN=$(<$HA_CONFIG_FOLDER/CDLAB_PASSWORD_ADMIN)"
 ENVS="$ENVS -e CDLAB_PASSWORD_LARA=$(<$HA_CONFIG_FOLDER/CDLAB_PASSWORD_LARA)"
 ENVS="$ENVS -e CDLAB_PASSWORD_TIM=$(<$HA_CONFIG_FOLDER/CDLAB_PASSWORD_TIM)"
 ENVS="$ENVS -e DO_API_TOKEN=$(<$HA_CONFIG_FOLDER/DO_API_TOKEN)"
-ENVS="$ENVS -e ANSIBLE_SSH_ARGS=-i/root/.heiseacademy/id_rsa"
+ENVS="$ENVS -e ANSIBLE_HOST_KEY_CHECKING=False"
 
-docker run --rm -it -v $PWD:/ansible -v $HA_CONFIG_FOLDER:/root/.heiseacademy $ENVS $DOCKER_ANSIBLE ansible-playbook $@
+MOUNTS="-v $PWD:/ansible -v $HA_CONFIG_FOLDER:/root/.heiseacademy"
+if [ $DOCKER_JENKINS_MODE -eq 1 ];then
+  MOUNTS="--volumes-from=$(hostname)"
+  ENVS="$ENVS -e ANSIBLE_SSH_ARGS=-i$JENKINS_HOME/.heiseacademy/id_rsa"
+else
+  ENVS="$ENVS -e ANSIBLE_SSH_ARGS=-i/root/.heiseacademy/id_rsa"
+fi
 
+docker run --rm $MOUNTS $ENVS $DOCKER_ANSIBLE ansible-playbook $@
