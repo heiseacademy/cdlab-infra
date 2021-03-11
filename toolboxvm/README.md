@@ -19,6 +19,13 @@ sudo apt install --yes openssh-server software-properties-common apt-transport-h
 ## git
 git config --global user.name "<Your-Full-Name>"
 git config --global user.email "<your-email-address>"
+## npm
+```bash
+curl -sL https://deb.nodesource.com/setup_14.x -o nodesource_setup.sh
+sudo bash nodesource_setup.sh
+sudo apt install nodejs
+node -v
+```
 ## terraform
 ```bash
 curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo apt-key add -
