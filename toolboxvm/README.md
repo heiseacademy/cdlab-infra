@@ -17,13 +17,15 @@ sudo apt update
 sudo apt install --yes openssh-server software-properties-common apt-transport-https ca-certificates curl gnupg lsb-release git
 ```
 ## git
+```bash
 git config --global user.name "<Your-Full-Name>"
 git config --global user.email "<your-email-address>"
+```
 ## npm
 ```bash
 curl -sL https://deb.nodesource.com/setup_14.x -o nodesource_setup.sh
 sudo bash nodesource_setup.sh
-sudo apt install nodejs
+sudo apt install --yes nodejs
 node -v
 ```
 ## terraform
