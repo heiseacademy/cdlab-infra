@@ -14,32 +14,31 @@ echo "%adm ALL=(ALL) NOPASSWD:ALL" | sudo tee /etc/sudoers.d/adm
 ## Basis Pakete
 ```bash
 sudo apt update
-sudo apt install openssh-server software-properties-common apt-transport-https ca-certificates curl gnupg lsb-release git
+sudo apt install --yes openssh-server software-properties-common apt-transport-https ca-certificates curl gnupg lsb-release git
 ```
 ## terraform
 ```bash
 curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo apt-key add -
-sudo apt-add-repository "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main"
-sudo apt-get update && sudo apt-get install terraform
+sudo apt-add-repository --yes "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main"
+sudo apt-get update && sudo apt-get install --yes terraform
 terraform -version
 ```
 ## ansible
 ```bash
 sudo apt-add-repository --yes --update ppa:ansible/ansible
-sudo apt update
-sudo apt install ansible
+sudo apt update && sudo apt install ansible
 ansible --version
 ```
 ## docker
 ```bash
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
-sudo apt-add-repository "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
-sudo apt update
-sudo apt install docker-ce docker-ce-cli containerd.io
-sudo adduser $USER docker
-sudo docker run hello-world
+curl -fsSL https://get.docker.com -o get-docker.sh
+sudo sh get-docker.sh
+sudo usermod -aG docker $USER
 ```
 ## git
+git config --global user.name "<Your-Full-Name>"
+git config --global user.email "<your-email-address>"
+
 # CDLab spezifische Tools und Konfirguration
 ## Git Repo cdlab-infra
 ```bash
