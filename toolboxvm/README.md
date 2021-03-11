@@ -1,16 +1,20 @@
 ## Heise Academy
 # CDLab ToolboxVM
-
 # Grundinstallation
+## Cleanup
+```bash
+rm -rf Documents/ Music/ Pictures/ Public/ Templates/ Videos/
+mkdir Workspace
+```
 ## Passwordless sudo
 ```bash
-
+echo "%adm ALL=(ALL) NOPASSWD:ALL" | sudo tee /etc/sudoers.d/adm
 ```
 # Tool Installation 
-## essiantials
+## Basis Pakete
 ```bash
 sudo apt update
-sudo apt install software-properties-common apt-transport-https ca-certificates curl gnupg lsb-release git
+sudo apt install openssh-server software-properties-common apt-transport-https ca-certificates curl gnupg lsb-release git
 ```
 ## terraform
 ```bash
@@ -40,8 +44,8 @@ sudo docker run hello-world
 ## Git Repo cdlab-infra
 ```bash
 pushd ~ # cd ~ plus remember actual dir
-[ -d workspace ] || mkdir workspace
-cd workspace
+[ -d Workspace ] || mkdir workspace
+cd Workspace
 git clone https://github.com/heiseacademy/cdlab-infra.git
 popd # return to former actual dir
 ```
