@@ -5,6 +5,8 @@ echo "%adm ALL=(ALL) NOPASSWD:ALL" | sudo tee /etc/sudoers.d/adm
 
 # base packages
 sudo apt update
+sudo apt upgrade --yes
+sudo apt autoremove --yes
 sudo apt install --yes vim openssh-server software-properties-common apt-transport-https ca-certificates curl gnupg lsb-release git build-essential
 echo -e ":syntax on\n:set softtabstop=2\n:set shiftwidth=2\n:set shiftround\n:set nojoinspaces\n:set noautoindent\n:set nu" > ~/.vimrc
 
@@ -46,6 +48,18 @@ echo -e "[org/gnome/shell]\nfavorite-apps = ['firefox.desktop', 'gnome-terminal.
 sudo mkdir /etc/dconf/db/local.d/locks
 echo -e "/org/gnome/shell/favorite-apps" | sudo tee /etc/dconf/db/local.db/locks/favorite-apps
 sudo dconf update
+
+# vscode
+wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > packages.microsoft.gpg
+sudo install -o root -g root -m 644 packages.microsoft.gpg /etc/apt/trusted.gpg.d/
+sudo sh -c 'echo "deb [arch=amd64,arm64,armhf signed-by=/etc/apt/trusted.gpg.d/packages.microsoft.gpg] https://packages.microsoft.com/repos/code stable main" > /etc/apt/sources.list.d/vscode.list'
+sudo apt update
+sudo apt install code
+
+# clone cdlab-infra repo
+pushd ~/workspace
+git clone https://github.com/heiseacademy/cdlab-infra.git
+popd
 
 # installed tools overview
 terraform -v

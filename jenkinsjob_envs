@@ -1,0 +1,72 @@
+set -e
+set +x
+
+cd docker-compose-based
+
+DOCKER_TERRAFORM=hashicorp/terraform:0.14.7
+HA_CONFIG_FOLDER=$JENKINS_HOME/.heiseacademy
+
+TARGET_HOST="dockerhost.$STAGE.$(cat $HA_CONFIG_FOLDER/CDLAB_BASE_DOMAIN)"
+
+echo "------------------------------------"
+echo "${ACTION}-ing Environment"
+echo "STAGE: $STAGE"
+echo "TARGET_HOST: $TARGET_HOST"
+echo "------------------------------------"
+
+curl -sS "https://api.digitalocean.com/v2/droplets" -H "Authorization: Bearer $(cat $HA_CONFIG_FOLDER/DO_API_TOKEN)" | jq -r .droplets[].name > droplets.txt
+
+if [ "$ACTION" = "create" ];then
+  if grep dockerhost-$STAGE droplets.txt;then
+  	echo "WARN: Droplet dockerhost-$STAGE already exists!"
+    exit 0
+  fi
+
+  echo "----------------------------------------------------"
+  echo "Creating DigitalOcean Droplet $TARGET_HOST with Terraform..."
+  echo "----------------------------------------------------"
+
+  cd terraform
+  [ -f tfplan ] && rm -f tfplan || true
+  [ -f terraform.tfstate ] && rm -f terraform.tfstate || true
+  [ -f terraform.tfstate.backup ] && rm -f terraform.tfstate.backup || true
+
+  ./terraform-w -j version
+  ./terraform-w -j init -input=false
+  ./terraform-w -j plan -out=tfplan -input=false 
+  ./terraform-w -j apply -input=false tfplan
+
+  mv terraform.tfstate $TARGET_HOST.terraform.tfstate
+  
+  echo "----------------------------------------------------"
+  echo "Provisioning target host $TARGET_HOST with ansible..."
+  echo "----------------------------------------------------"
+
+  cd ../ansible
+  ./ansible-playbook-w -j -i $PWD/digital_ocean.py $PWD/dockerhost.yml
+fi
+
+
+if [ "$ACTION" = "delete" ];then
+  if grep dockerhost-$STAGE droplets.txt;then
+  	
+    echo "----------------------------------------------------"
+    echo "Deleting DigitalOcean Droplet $TARGET_HOST with Terraform..."
+    echo "----------------------------------------------------"
+
+  	cd terraform
+  	[ -f tfplan ] && rm -f tfplan || true
+ 	[ -f terraform.tfstate ] && rm -f terraform.tfstate || true
+  	[ -f terraform.tfstate.backup ] && rm -f terraform.tfstate.backup || true
+    
+    [ -f $TARGET_HOST.terraform.tfstate ] && mv $TARGET_HOST.terraform.tfstate terraform.tfstate || true
+
+  	./terraform-w -j destroy -auto-approve
+  
+  else
+    echo "WARN: Droplet dockerhost-$STAGE not found!"
+    exit 0
+  fi
+fi
+
+
