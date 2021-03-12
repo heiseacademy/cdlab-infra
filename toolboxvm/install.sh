@@ -1,8 +1,5 @@
 #!/bin/bash
 
-read -p "Fullname: " FULLNAME
-read -p "Email: " EMAIL
-
 # passwordless sudo
 echo "%adm ALL=(ALL) NOPASSWD:ALL" | sudo tee /etc/sudoers.d/adm
 
@@ -35,8 +32,8 @@ sudo curl -L "https://github.com/docker/compose/releases/download/1.28.5/docker-
 sudo chmod +x /usr/local/bin/docker-compose
 
 # git config
-git config --global user.name "$FULLNAME"
-git config --global user.email "$EMAIL"
+git config --global user.name "$USER"
+git config --global user.email "$USER@example.com"
 
 # user adjustments
 rm -rf ~/Documents/ ~/Music/ ~/Pictures/ ~/Public/ ~/Templates/ ~/Videos/ &&\
