@@ -48,11 +48,16 @@ echo -e "/org/gnome/shell/favorite-apps" | sudo tee /etc/dconf/db/local.db/locks
 sudo dconf update
 
 # installed tools overview
-echo -e "\n=============================================\n"
 terraform -v
 ansible --version
 docker --version
 docker-compose --version
 npm -v
 
-echo -e "\n=============================================\n= Bitte nun einmal ab- und wieder anmelden, =\n= um die Änderungen zu aktivieren!          = \n=============================================\n"
+echo "===================================================="
+echo "= Reboot, um die Änderungen zu aktivieren in 5s... ="
+echo "===================================================="
+
+sleep 5
+
+sudo shutdown --reboot now
