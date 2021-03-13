@@ -20,14 +20,23 @@ rm -f nodesource_setup.sh
 curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo apt-key add -
 sudo apt-add-repository --yes "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main"
 sudo apt-get update && sudo apt-get install --yes terraform
+
+# ansible
 sudo apt-add-repository --yes --update ppa:ansible/ansible
 sudo apt update && sudo apt install --yes ansible-base
 
+# python pip
+sudo apt install python3-pip
+
 # docker
-curl -fsSL https://get.docker.com -o get-docker.sh
-sudo sh get-docker.sh
-sudo adduser $USER docker
-rm -f get-docker.sh
+if which docker;then
+  echo "docker already installed"
+else
+  curl -fsSL https://get.docker.com -o get-docker.sh
+  sudo sh get-docker.sh
+  sudo adduser $USER docker
+  rm -f get-docker.sh
+fi
 
 # docker-compose
 sudo curl -L "https://github.com/docker/compose/releases/download/1.28.5/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
@@ -44,7 +53,7 @@ mkdir ~/workspace
 echo 'pref("browser.startup.homepage", "https://github.com/heiseacademy/cdlab-infra");' | sudo tee /etc/firefox/syspref.js
 echo -e "user-db:user\nsystem-db:local" | sudo tee /etc/dconf/profile/user
 sudo mkdir /etc/dconf/db/local.d/
-echo -e "[org/gnome/shell]\nfavorite-apps = ['firefox.desktop', 'gnome-terminal.desktop', 'nautilus.desktop']" | sudo tee /etc/dconf/db/local.d/00-favorite-apps
+echo -e "[org/gnome/shell]\nfavorite-apps = ['code.desktop', 'gnome-terminal.desktop', 'firefox.desktop', 'nautilus.desktop']" | sudo tee /etc/dconf/db/local.d/00-favorite-apps
 sudo mkdir /etc/dconf/db/local.d/locks
 echo -e "/org/gnome/shell/favorite-apps" | sudo tee /etc/dconf/db/local.db/locks/favorite-apps
 sudo dconf update
@@ -55,8 +64,12 @@ sudo install -o root -g root -m 644 packages.microsoft.gpg /etc/apt/trusted.gpg.
 sudo sh -c 'echo "deb [arch=amd64,arm64,armhf signed-by=/etc/apt/trusted.gpg.d/packages.microsoft.gpg] https://packages.microsoft.com/repos/code stable main" > /etc/apt/sources.list.d/vscode.list'
 sudo apt update
 sudo apt install code
+code --install-extension pkief.material-icon-theme
+code --install-extension ms-azuretools.vscode-docker
+code --install-extension hashicorp.terraform
+code --install-extension ms-python.python
 
-# clone cdlab-infra repo
+# clone course specific repos 
 pushd ~/workspace
 git clone https://github.com/heiseacademy/cdlab-infra.git
 popd
