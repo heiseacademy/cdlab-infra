@@ -50,13 +50,13 @@ function do_install() {
 
   # user adjustments / sidebar 
   rm -rf ~/Documents/ ~/Music/ ~/Pictures/ ~/Public/ ~/Templates/ ~/Videos/ &&\
-  mkdir ~/workspace
+  [ ! -d ~/workspace ] && mkdir ~/workspace || true
 
   echo 'pref("browser.startup.homepage", "https://github.com/heiseacademy/cdlab-infra");' | sudo tee /etc/firefox/syspref.js
   echo -e "user-db:user\nsystem-db:local" | sudo tee /etc/dconf/profile/user
-  sudo mkdir /etc/dconf/db/local.d/
+  [ ! -d /etc/dconf/db/local.d/ ] && sudo mkdir /etc/dconf/db/local.d/ || true
   echo -e "[org/gnome/shell]\nfavorite-apps = ['code.desktop', 'gnome-terminal.desktop', 'firefox.desktop', 'nautilus.desktop']" | sudo tee /etc/dconf/db/local.d/00-favorite-apps
-  sudo mkdir /etc/dconf/db/local.d/locks
+  [ ! -d /etc/dconf/db/local.d/locks ] && sudo mkdir /etc/dconf/db/local.d/locks || true
   echo -e "/org/gnome/shell/favorite-apps" | sudo tee /etc/dconf/db/local.d/locks/favorite-apps
   sudo dconf update
 
@@ -71,10 +71,12 @@ function do_install() {
   code --install-extension hashicorp.terraform
   code --install-extension ms-python.python
 
-  # clone course specific repos 
-  pushd ~/workspace
-  git clone https://github.com/heiseacademy/cdlab-infra.git
-  popd
+  # clone course specific repos
+  if [ ! -d ~/workspace/cdlab-infra ];then
+    pushd ~/workspace
+    git clone https://github.com/heiseacademy/cdlab-infra.git
+    popd
+  fi
 
   # installed tools overview
   terraform -v
