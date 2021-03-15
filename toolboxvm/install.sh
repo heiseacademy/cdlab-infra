@@ -27,7 +27,7 @@ function do_install() {
   sudo apt update && sudo apt install --yes ansible-base
 
   # python pip
-  sudo apt install python3-pip
+  sudo apt install --yes python3-pip
 
   # docker
   if which docker;then
