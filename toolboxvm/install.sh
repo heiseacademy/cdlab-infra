@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
 function do_install() {
   # passwordless sudo
