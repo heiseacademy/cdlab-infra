@@ -84,6 +84,7 @@ function do_install() {
   docker --version
   docker-compose --version
   npm -v
+  node --version
 
   echo "===================================================="
   echo "= Reboot, um die Änderungen zu aktivieren in 5s... ="
