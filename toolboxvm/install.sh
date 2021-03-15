@@ -49,7 +49,7 @@ function do_install() {
   git config --global user.email "$USER@example.com"
 
   # user adjustments / sidebar 
-  rm -rf ~/Documents/ ~/Music/ ~/Pictures/ ~/Public/ ~/Templates/ ~/Videos/ &&\
+  rm -rf ~/Documents/ ~/Music/ ~/Pictures/ ~/Public/ ~/Templates/ ~/Videos/
   [ ! -d ~/workspace ] && mkdir ~/workspace || true
 
   echo 'pref("browser.startup.homepage", "https://github.com/heiseacademy/cdlab-infra");' | sudo tee /etc/firefox/syspref.js
