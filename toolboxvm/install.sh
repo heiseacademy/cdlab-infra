@@ -48,7 +48,7 @@ function do_install() {
   git config --global user.name "$USER"
   git config --global user.email "$USER@example.com"
 
-  # user adjustments
+  # user adjustments / sidebar 
   rm -rf ~/Documents/ ~/Music/ ~/Pictures/ ~/Public/ ~/Templates/ ~/Videos/ &&\
   mkdir ~/workspace
 
@@ -57,7 +57,7 @@ function do_install() {
   sudo mkdir /etc/dconf/db/local.d/
   echo -e "[org/gnome/shell]\nfavorite-apps = ['code.desktop', 'gnome-terminal.desktop', 'firefox.desktop', 'nautilus.desktop']" | sudo tee /etc/dconf/db/local.d/00-favorite-apps
   sudo mkdir /etc/dconf/db/local.d/locks
-  echo -e "/org/gnome/shell/favorite-apps" | sudo tee /etc/dconf/db/local.db/locks/favorite-apps
+  echo -e "/org/gnome/shell/favorite-apps" | sudo tee /etc/dconf/db/local.d/locks/favorite-apps
   sudo dconf update
 
   # vscode
