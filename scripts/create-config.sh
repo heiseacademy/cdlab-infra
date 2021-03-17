@@ -1,4 +1,6 @@
 #!/bin/bash
+set -e
+
 HA_CONFIG_FOLDER=~/.heiseacademy
 
 SHOW_USAGE=0
@@ -36,7 +38,7 @@ echo "OK."
 # ------------- Already configured check
 if [ -d "$HA_CONFIG_FOLDER" ];then
   echo "ERROR: Config Folder $HA_CONFIG_FOLDER already exists! Please remove manually if you like to change it."
-  #exit 1
+  exit 1
 fi
 
 # ------------- Create config folder
@@ -77,11 +79,12 @@ fi
 if grep $CDLAB_BASE_DOMAIN ~/.ssh/config;then
   echo "ssh config for CDLAB_BASE_DOMAIN already set!"
 else
-  cat <EOF >> ~/.ssh/config
+  cat >> ~/.ssh/config <<EOF
 host *.${CDLAB_BASE_DOMAIN}
   user root
   IdentityFile ~/.heiseacademy/id_rsa
 EOF
+fi
 
 # ------------- Print Results
 echo
