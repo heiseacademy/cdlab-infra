@@ -9,7 +9,7 @@ function do_install() {
   sudo apt update
   sudo apt upgrade --yes
   sudo apt autoremove --yes
-  sudo apt install --yes vim openssh-server software-properties-common apt-transport-https ca-certificates curl gnupg lsb-release git build-essential
+  sudo apt install --yes vim jq openssh-server software-properties-common apt-transport-https ca-certificates curl gnupg lsb-release git build-essential
   echo -e ":syntax on\n:set softtabstop=2\n:set shiftwidth=2\n:set shiftround\n:set nojoinspaces\n:set noautoindent\n:set nu" > ~/.vimrc
 
   # npm/node
