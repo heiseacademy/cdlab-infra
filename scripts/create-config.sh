@@ -67,6 +67,22 @@ ssh-keygen -t rsa -b 4096 -f id_rsa -N ''
 ssh-keygen -t rsa -b 4096 -f id_rsa-serviceuser -N ''
 cd $OLD_PWD
 
+# Install ssh config for CDLAB_BASE_DOMAIN Hosts
+if [ ! -d ~/.ssh ];then
+  mkdir ~/.ssh
+  chown 700 ~/.ssh
+fi
+
+[ ! -f ~/.ssh/config ] && touch ~/.ssh/config || true
+if grep $CDLAB_BASE_DOMAIN ~/.ssh/config;then
+  echo "ssh config for CDLAB_BASE_DOMAIN already set!"
+else
+  cat <EOF >> ~/.ssh/config
+host *.${CDLAB_BASE_DOMAIN}
+  user root
+  IdentityFile ~/.heiseacademy/id_rsa
+EOF
+
 # ------------- Print Results
 echo
 echo "==========================="
