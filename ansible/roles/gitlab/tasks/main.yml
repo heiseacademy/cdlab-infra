@@ -121,7 +121,7 @@
     mode: 0600
 
 # -----------------------------
-# Start Sercices
+# Start Services
 # -----------------------------
 
 - name: Create and start services
