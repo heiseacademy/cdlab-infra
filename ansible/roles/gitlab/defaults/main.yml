@@ -1,3 +1,3 @@
 ---
 # Gitlab Version (see dockerhub sameersbn/gitlab:<tags>)
-gitlab_version: "13.8.4"
+gitlab_version: "13.9.3"

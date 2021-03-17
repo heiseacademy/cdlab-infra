@@ -5,8 +5,6 @@
     - name: Update repositories cache
       apt:
         update_cache: yes
-  # vars_files:
-  #   - "./vars/users.yml"
   roles:
     - role: common
       tags: docker, common
