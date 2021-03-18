@@ -26,6 +26,8 @@ function do_install() {
   # ansible
   sudo apt-add-repository --yes --update ppa:ansible/ansible
   sudo apt update && sudo apt install --yes ansible-base
+  ansible-galaxy collection install community.general
+  ansible-galaxy collection install community.docker
 
   # python pip
   sudo apt install --yes python3-pip
