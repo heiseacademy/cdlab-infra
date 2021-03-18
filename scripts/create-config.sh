@@ -46,21 +46,21 @@ fi
 
 # ------------- Fetch & save some random passwords
 if [ -z "$CDLAB_PASSWORD_ADMIN" ];then
-  CDLAB_PASSWORD_ADMIN=$(curl -sS 'https://makemeapassword.ligos.net/api/v1/alphanumeric/plain?c=1&l=8')
+  CDLAB_PASSWORD_ADMIN=$(curl -sS 'https://makemeapassword.ligos.net/api/v1/alphanumeric/plain?c=1&l=8' | tr -dc 'A-Za-z0-9!"#$%&'\''()*+,-./:;<=>?@[\]^_`{|}~')
 fi
+echo -n $CDLAB_PASSWORD_ADMIN > $HA_CONFIG_FOLDER/CDLAB_PASSWORD_ADMIN
 
-echo $CDLAB_PASSWORD_ADMIN > $HA_CONFIG_FOLDER/CDLAB_PASSWORD_ADMIN
-CDLAB_PASSWORD_LARA=$(curl -sS 'https://makemeapassword.ligos.net/api/v1/alphanumeric/plain?c=1&l=8')
+CDLAB_PASSWORD_LARA=$(curl -sS 'https://makemeapassword.ligos.net/api/v1/alphanumeric/plain?c=1&l=8' | tr -dc 'A-Za-z0-9!"#$%&'\''()*+,-./:;<=>?@[\]^_`{|}~')
+echo -n $CDLAB_PASSWORD_LARA > $HA_CONFIG_FOLDER/CDLAB_PASSWORD_LARA
 
-echo $CDLAB_PASSWORD_LARA > $HA_CONFIG_FOLDER/CDLAB_PASSWORD_LARA
-CDLAB_PASSWORD_TIM=$(curl -sS 'https://makemeapassword.ligos.net/api/v1/alphanumeric/plain?c=1&l=8')
-echo $CDLAB_PASSWORD_TIM > $HA_CONFIG_FOLDER/CDLAB_PASSWORD_TIM
+CDLAB_PASSWORD_TIM=$(curl -sS 'https://makemeapassword.ligos.net/api/v1/alphanumeric/plain?c=1&l=8' | tr -dc 'A-Za-z0-9!"#$%&'\''()*+,-./:;<=>?@[\]^_`{|}~')
+echo -n $CDLAB_PASSWORD_TIM > $HA_CONFIG_FOLDER/CDLAB_PASSWORD_TIM
 
 # ------------- Save DigitalOcean API Token
-echo $DO_API_TOKEN > $HA_CONFIG_FOLDER/DO_API_TOKEN
+echo -n $DO_API_TOKEN > $HA_CONFIG_FOLDER/DO_API_TOKEN
 
 # ------------- Save CDLab Base Domnain
-echo $CDLAB_BASE_DOMAIN > $HA_CONFIG_FOLDER/CDLAB_BASE_DOMAIN
+echo -n $CDLAB_BASE_DOMAIN > $HA_CONFIG_FOLDER/CDLAB_BASE_DOMAIN
 
 # ------------- Create Provisioning & Serviceuser SSH Keypair
 OLD_PWD=$(pwd)
