@@ -25,3 +25,10 @@
   file:
     path: /opt/docker
     state: directory
+
+# TODO: make docker-compose version configurable (as of now it's hardcoded here and in roles/geerlingguy.docker)
+- name: add bash-completion for docker-compose
+  get_url:
+    url: https://raw.githubusercontent.com/docker/compose/1.28.5/contrib/completion/bash/docker-compose
+    dest: /etc/bash_completion.d/docker-compose
+    mode: '0644'
