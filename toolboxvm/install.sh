@@ -5,11 +5,16 @@ function do_install() {
   # passwordless sudo
   echo "%adm ALL=(ALL) NOPASSWD:ALL" | sudo tee /etc/sudoers.d/adm
 
-  # base packages
+  # update system
   sudo apt update
   sudo apt upgrade --yes
   sudo apt autoremove --yes
-  sudo apt install --yes vim jq openssh-server software-properties-common apt-transport-https ca-certificates curl gnupg lsb-release git build-essential
+  
+  # base packages
+  sudo apt install --yes vim jq dnsutils openssh-server \
+                         software-properties-common apt-transport-https \
+                         ca-certificates curl gnupg lsb-release git \
+                         build-essential
   echo -e ":syntax on\n:set softtabstop=2\n:set shiftwidth=2\n:set shiftround\n:set nojoinspaces\n:set noautoindent\n:set nu" > ~/.vimrc
 
   # npm/node
