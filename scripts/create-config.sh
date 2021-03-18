@@ -83,6 +83,8 @@ else
 host *.${CDLAB_BASE_DOMAIN}
   user root
   IdentityFile ~/.heiseacademy/id_rsa
+  StrictHostKeyChecking no
+  UserKnownHostsFile /dev/null
 EOF
 fi
 
