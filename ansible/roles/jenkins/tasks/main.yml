@@ -132,7 +132,7 @@
     group: "1000"
 
 # -----------------------------
-# Start Sercices
+# Start Services
 # -----------------------------
 
 - name: Create and start services
