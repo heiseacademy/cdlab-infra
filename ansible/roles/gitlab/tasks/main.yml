@@ -40,7 +40,7 @@
 - name: Setup api token
   template:
     src: templates/025_api_personal_access_token.rb.j2
-    dest: /opt/docker/gitlab/025_api_personal_access_token.rb.j2
+    dest: /opt/docker/gitlab/025_api_personal_access_token.rb
     mode: 0644
 
 # -----------------------------
