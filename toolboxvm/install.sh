@@ -11,10 +11,10 @@ function do_install() {
   sudo apt autoremove --yes
   
   # base packages
-  sudo apt install --yes vim jq dnsutils openssh-server \
-                         software-properties-common apt-transport-https \
-                         ca-certificates curl gnupg lsb-release git \
-                         build-essential
+  sudo apt install --yes vim jq dnsutils net-tools openssh-server \
+                        software-properties-common apt-transport-https \
+                        ca-certificates curl gnupg lsb-release git \
+                        build-essential
   echo -e ":syntax on\n:set softtabstop=2\n:set shiftwidth=2\n:set shiftround\n:set nojoinspaces\n:set noautoindent\n:set nu" > ~/.vimrc
 
   # npm/node

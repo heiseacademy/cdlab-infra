@@ -19,7 +19,7 @@ if [ -z "$DO_API_TOKEN" ];then
 fi
 
 if [ $SHOW_USAGE -eq 1 ];then
-  echo "Usage: $0 \"<base DNS Domain>\" \"<DigitalOcean API Token>\""
+  echo "Usage: $0 \"<base DNS Domain>\" \"<DigitalOcean API Token>\" \"<Admin and User Password (OPTIONAL)>\""
   exit 1
 fi
 
@@ -49,14 +49,16 @@ if [ -z "$USER" ];then
   echo "ERROR: Environment Variable \$USER seems to be empty. Please set USER=<your prefered username> manually and start over again!"
   exit 1
 fi
-echo -n $USER > $HA_CONFIG_FOLDER/CDLAB_USERNAME_USER
+CDLAB_USERNAME_USER=$USER
+echo -n $CDLAB_USERNAME_USER > $HA_CONFIG_FOLDER/CDLAB_USERNAME_USER
 
 # ------------- Create/fetch & save some random passwords
 if [ -z "$CDLAB_PASSWORD_ADMIN" ];then
   CDLAB_PASSWORD_ADMIN=$(curl -sS 'https://makemeapassword.ligos.net/api/v1/alphanumeric/plain?c=1&l=8' | tr -dc 'A-Za-z0-9!"#$%&'\''()*+,-./:;<=>?@[\]^_`{|}~')
 fi
+CDLAB_PASSWORD_USER=$CDLAB_PASSWORD_ADMIN
 echo -n $CDLAB_PASSWORD_ADMIN > $HA_CONFIG_FOLDER/CDLAB_PASSWORD_ADMIN
-echo -n $CDLAB_PASSWORD_ADMIN > $HA_CONFIG_FOLDER/CDLAB_PASSWORD_USER
+echo -n $CDLAB_PASSWORD_USER > $HA_CONFIG_FOLDER/CDLAB_PASSWORD_USER
 
 # ------------- Create/fetch & save a personal gitlab api token
 GITLAB_API_TOKEN=$(curl -sS 'https://makemeapassword.ligos.net/api/v1/alphanumeric/plain?c=1&l=32' | tr -dc 'A-Za-z0-9!"#$%&'\''()*+,-./:;<=>?@[\]^_`{|}~')
@@ -105,7 +107,7 @@ echo
 cat $HA_CONFIG_FOLDER/id_rsa.pub
 echo
 echo "Your Passwords for $CDLAB_USERNAME_USER/admin/root and some example users are:"
-echo "Passwort for Jenkins User $CDLAB_USERNAME_USER: $CDLAB_PASSWORD_USER"
+echo "Passwort for Jenkins/Gitlab User ${CDLAB_USERNAME_USER}: ${CDLAB_PASSWORD_USER}"
 echo "Passwort for Jenkins User admin: $CDLAB_PASSWORD_ADMIN"
 echo "Passwort for Gitlab User root:   $CDLAB_PASSWORD_ADMIN"
 echo
