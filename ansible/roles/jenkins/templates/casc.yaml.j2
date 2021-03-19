@@ -5,10 +5,8 @@ jenkins:
       users:
         - id: admin
           password: "{{ lookup('env', 'CDLAB_PASSWORD_ADMIN') }}"
-        - id: tim
-          password: "{{ lookup('env', 'CDLAB_PASSWORD_TIM') }}"
-        - id: lara
-          password: "{{ lookup('env', 'CDLAB_PASSWORD_LARA') }}"
+        - id: "{{ lookup('env', 'CDLAB_USERNAME_USER') }}"
+          password: "{{ lookup('env', 'CDLAB_PASSWORD_USER') }}"
   authorizationStrategy:
     globalMatrix:
       permissions:

@@ -44,17 +44,23 @@ fi
 # ------------- Create config folder
 [ -d "$HA_CONFIG_FOLDER" ] || mkdir $HA_CONFIG_FOLDER
 
-# ------------- Fetch & save some random passwords
+# ------------- Save Username
+if [ -z "$USER" ];then
+  echo "ERROR: Environment Variable \$USER seems to be empty. Please set USER=<your prefered username> manually and start over again!"
+  exit 1
+fi
+echo -n $USER > $HA_CONFIG_FOLDER/CDLAB_USERNAME_USER
+
+# ------------- Create/fetch & save some random passwords
 if [ -z "$CDLAB_PASSWORD_ADMIN" ];then
   CDLAB_PASSWORD_ADMIN=$(curl -sS 'https://makemeapassword.ligos.net/api/v1/alphanumeric/plain?c=1&l=8' | tr -dc 'A-Za-z0-9!"#$%&'\''()*+,-./:;<=>?@[\]^_`{|}~')
 fi
 echo -n $CDLAB_PASSWORD_ADMIN > $HA_CONFIG_FOLDER/CDLAB_PASSWORD_ADMIN
+echo -n $CDLAB_PASSWORD_ADMIN > $HA_CONFIG_FOLDER/CDLAB_PASSWORD_USER
 
-CDLAB_PASSWORD_LARA=$(curl -sS 'https://makemeapassword.ligos.net/api/v1/alphanumeric/plain?c=1&l=8' | tr -dc 'A-Za-z0-9!"#$%&'\''()*+,-./:;<=>?@[\]^_`{|}~')
-echo -n $CDLAB_PASSWORD_LARA > $HA_CONFIG_FOLDER/CDLAB_PASSWORD_LARA
-
-CDLAB_PASSWORD_TIM=$(curl -sS 'https://makemeapassword.ligos.net/api/v1/alphanumeric/plain?c=1&l=8' | tr -dc 'A-Za-z0-9!"#$%&'\''()*+,-./:;<=>?@[\]^_`{|}~')
-echo -n $CDLAB_PASSWORD_TIM > $HA_CONFIG_FOLDER/CDLAB_PASSWORD_TIM
+# ------------- Create/fetch & save a personal gitlab api token
+GITLAB_API_TOKEN=$(curl -sS 'https://makemeapassword.ligos.net/api/v1/alphanumeric/plain?c=1&l=32' | tr -dc 'A-Za-z0-9!"#$%&'\''()*+,-./:;<=>?@[\]^_`{|}~')
+echo -n $GITLAB_API_TOKEN > $HA_CONFIG_FOLDER/GITLAB_API_TOKEN
 
 # ------------- Save DigitalOcean API Token
 echo -n $DO_API_TOKEN > $HA_CONFIG_FOLDER/DO_API_TOKEN
@@ -67,6 +73,7 @@ OLD_PWD=$(pwd)
 cd $HA_CONFIG_FOLDER
 ssh-keygen -t rsa -b 4096 -f id_rsa -N ''
 ssh-keygen -t rsa -b 4096 -f id_rsa-serviceuser -N ''
+ssh-keygen -t rsa -b 4096 -f id_rsa-jenkins -N ''
 cd $OLD_PWD
 
 # Install ssh config for CDLAB_BASE_DOMAIN Hosts
@@ -97,10 +104,9 @@ echo "DigitalOcean.com -> Account -> Settings -> Security -> SSH Keys"
 echo
 cat $HA_CONFIG_FOLDER/id_rsa.pub
 echo
-echo "Your Passwords for admin/root and some example users are:"
+echo "Your Passwords for $CDLAB_USERNAME_USER/admin/root and some example users are:"
+echo "Passwort for Jenkins User $CDLAB_USERNAME_USER: $CDLAB_PASSWORD_USER"
 echo "Passwort for Jenkins User admin: $CDLAB_PASSWORD_ADMIN"
 echo "Passwort for Gitlab User root:   $CDLAB_PASSWORD_ADMIN"
-echo "Password for Jenkins & Gitlab User lara: $CDLAB_PASSWORD_LARA"
-echo "Password for Jenkins & Gitlab User tim:  $CDLAB_PASSWORD_TIM"
 echo
 echo "==========================="
