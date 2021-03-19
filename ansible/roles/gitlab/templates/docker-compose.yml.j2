@@ -109,7 +109,7 @@ services:
     volumes:
     - /opt/docker/gitlab/storage/gitlab:/home/git/data:Z
     - /opt/docker/gitlab/storage/registry/certs:/certs:Z
-    - /opt/docker/gitlab/25_api_personal_access_token.rb:/home/git/gitlab/db/fixtures/production/25_api_personal_access_token.rb:Z
+    - /opt/docker/gitlab/025_api_personal_access_token.rb:/home/git/gitlab/db/fixtures/production/025_api_personal_access_token.rb:Z
     environment:
     - DEBUG=false
 
