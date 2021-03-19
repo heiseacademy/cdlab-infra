@@ -21,6 +21,14 @@
   command: sysctl vm.overcommit_memory=1
 
 # -----------------------------
+# setup api token for further provisioning
+# -----------------------------
+- name: Setup api token
+  template:
+    src: templates/25_api_personal_access_token.rb.j2
+    dest: /opt/docker/gitlab/25_api_personal_access_token.rb.j2
+
+# -----------------------------
 # docker-compose
 # -----------------------------
 

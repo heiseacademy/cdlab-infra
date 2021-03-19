@@ -1,0 +1,17 @@
+# Inspired by https://gitlab.com/gitlab-org/gitlab/-/blob/master/db/fixtures/development/25_api_personal_access_token.rb
+# frozen_string_literal: true
+
+puts "=======================================".color(:red)
+puts "---------------------------------------".color(:red)
+puts "Creating api access token for root user".color(:red)
+puts "---------------------------------------".color(:red)
+puts "=======================================".color(:red)
+
+token = PersonalAccessToken.new
+token.user_id = User.find_by(username: 'root').id
+token.name = 'api-token-for-provisioning'
+token.scopes = ["api", "sudo"]
+token.set_token('{{ lookup('env', 'GITLAB_API_TOKEN') }}')
+token.save
+
+print 'OK'
