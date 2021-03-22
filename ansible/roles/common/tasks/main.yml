@@ -5,6 +5,10 @@
 - import_tasks: configure_apt.yml
 # - import_tasks: setup_users.yml
 
+- name: Set timezone to Europe/Berlin
+  community.general.timezone:
+    name: Europe/Berlin
+
 - name: Install a list of packages
   apt:
     name: "{{ common_packages }}"
