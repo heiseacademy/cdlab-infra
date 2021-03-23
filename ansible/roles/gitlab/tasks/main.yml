@@ -136,3 +136,12 @@
 - name: Create and start services
   community.general.docker_compose:
     project_src: /opt/docker/gitlab
+
+- name: "wait for gitlab to come up"
+  uri:
+    url: "https://gitlab.{{ lookup('env', 'CDLAB_BASE_DOMAIN') }}/users/sign_in"
+    status_code: "200"
+  register: result
+  until: result.status == 200
+  retries: 180
+  delay: 1
