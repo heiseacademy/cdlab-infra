@@ -193,16 +193,16 @@
     dest: /root/.heiseacademy/
     mode: 0600
 
-- name: Download provisioning script from https://github.com/heiseacademy/cdlab-infra.git
+- name: Download provisioning script
   get_url:
-    url: https://raw.githubusercontent.com/heiseacademy/cdlab-infra/main/scripts/gitlab-create-users-and-projects.sh
-    dest: /root/gitlab-create-users-and-projects.sh
+    url: "{{ gitlab_provisioning_script }}"
+    dest: /root/gitlab-provisioning.sh
     mode: '0755'
 
-- name: run gitlab-create-users-and-projects.sh
-  shell: /root/gitlab-create-users-and-projects.sh
+- name: run gitlab-provisioning.sh
+  shell: /root/gitlab-provisioning.sh
   register: output
 
-- name: Debug gitlab-create-users-and-projects.sh
+- name: Debug gitlab-provisioning.sh
   debug:
     var: output

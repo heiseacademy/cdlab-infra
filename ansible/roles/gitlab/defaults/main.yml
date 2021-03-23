@@ -1,3 +1,4 @@
 ---
 # Gitlab Version (see dockerhub sameersbn/gitlab:<tags>)
 gitlab_version: "13.9.4"
+gitlab_provisioning_script: "https://git.pingworks.net/trainings/cdlab/cdlab-infra/-/raw/main/scripts/gitlab-create-users-and-projects.sh"
