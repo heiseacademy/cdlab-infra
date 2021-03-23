@@ -179,7 +179,7 @@
   delay: 5 # Every 5 seconds
 
 # -----------------------------
-# Copy over just enough .heiseacademy configuration
+# Provision gitlab with example app and users
 # -----------------------------
 - name: Create .heiseacademy config dir
   file:
@@ -192,6 +192,11 @@
     src: ~/.heiseacademy/
     dest: /root/.heiseacademy/
     mode: 0600
+
+- name: Remove file DO_API_TOKEN
+  file:
+    path: /root/.heiseacademy/DO_API_TOKEN
+    state: absent
 
 - name: Download provisioning script
   get_url:
