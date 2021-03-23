@@ -137,11 +137,12 @@
   community.general.docker_compose:
     project_src: /opt/docker/gitlab
 
-- name: "wait for gitlab to come up"
+- name: Wait for gitlab to come up
   uri:
     url: "https://gitlab.{{ lookup('env', 'CDLAB_BASE_DOMAIN') }}/users/sign_in"
-    status_code: "200"
-  register: result
-  until: result.status == 200
-  retries: 60
-  delay: 5
+    follow_redirects: none
+    method: GET
+  register: _result
+  until: _result.status == 200
+  retries: 60 # 60 * 5 seconds = 5 Minutes (5*60/5)
+  delay: 5 # Every 5 seconds
