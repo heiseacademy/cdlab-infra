@@ -11,8 +11,7 @@ jenkins:
     globalMatrix:
       permissions:
         - "Overall/Administer:admin"
-        - "Overall/Administer:tim"
-        - "Overall/Administer:lara"
+        - "Overall/Administer:{{ lookup('env', 'CDLAB_USERNAME_USER') }}"
         - "Overall/Read:authenticated"
   remotingSecurity:
     enabled: true
