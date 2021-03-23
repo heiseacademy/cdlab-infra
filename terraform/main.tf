@@ -19,6 +19,7 @@ resource "digitalocean_droplet" "jenkins" {
   name   = "jenkins"
   region = "fra1"
   size   = "s-2vcpu-4gb"
+  ipv6   = false
   ssh_keys = [
     data.digitalocean_ssh_key.ssh_key.id
   ]
@@ -41,6 +42,7 @@ resource "digitalocean_droplet" "gitlab" {
   name   = "gitlab"
   region = "fra1"
   size   = "s-2vcpu-4gb"
+  ipv6   = false
   ssh_keys = [
     data.digitalocean_ssh_key.ssh_key.id
   ]
