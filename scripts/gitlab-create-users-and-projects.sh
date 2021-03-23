@@ -2,10 +2,10 @@
 set -e
 
 HA_CONFIG_FOLDER=~/.heiseacademy
-EXAMPLE_PROJECTS="Example App,exampleapp,Api,exampleapp-api,https://github.com/heiseacademy/exampleapp-api.git"
-EXAMPLE_PROJECTS="$EXAMPLE_PROJECTS;Example App,exampleapp,UI,exampleapp-ui,https://github.com/heiseacademy/exampleapp-ui.git"
-EXAMPLE_PROJECTS="$EXAMPLE_PROJECTS;Example App,exampleapp,Environments,exampleapp-envs,https://github.com/heiseacademy/exampleapp-envs.git"
-EXAMPLE_PROJECTS="$EXAMPLE_PROJECTS;CD Lab,cdlab,Infra,cdlab-infra,https://github.com/heiseacademy/cdlab-infra.git"
+EXAMPLE_PROJECTS="ExampleApp,exampleapp,exampleapp-api,exampleapp-api,https://github.com/heiseacademy/exampleapp-api.git"
+EXAMPLE_PROJECTS="$EXAMPLE_PROJECTS;ExampleApp,exampleapp,exampleapp-ui,exampleapp-ui,https://github.com/heiseacademy/exampleapp-ui.git"
+EXAMPLE_PROJECTS="$EXAMPLE_PROJECTS;ExampleApp,exampleapp,exampleapp-envs,exampleapp-envs,https://github.com/heiseacademy/exampleapp-envs.git"
+EXAMPLE_PROJECTS="$EXAMPLE_PROJECTS;CDLab,cdlab,cdlab-infra,cdlab-infra,https://github.com/heiseacademy/cdlab-infra.git"
 
 if [ ! -d "$HA_CONFIG_FOLDER" ];then
   echo "ERROR: Config Folder $HA_CONFIG_FOLDER does not exist! Please run create-config.sh first!"

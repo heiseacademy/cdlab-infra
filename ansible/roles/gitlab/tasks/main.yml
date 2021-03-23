@@ -137,6 +137,10 @@
   community.general.docker_compose:
     project_src: /opt/docker/gitlab
 
+# -----------------------------
+# Make sure Gitlab is up & running
+# -----------------------------
+
 - name: Wait for gitlab to come up
   uri:
     url: "https://gitlab.{{ lookup('env', 'CDLAB_BASE_DOMAIN') }}/users/sign_in"
@@ -146,3 +150,59 @@
   until: _result.status == 200
   retries: 60 # 60 * 5 seconds = 5 Minutes (5*60/5)
   delay: 5 # Every 5 seconds
+
+- name: Pause for another 5s to be on the safe side
+  pause:
+    seconds: "5"
+
+- name: Check again if gitlab webui is up and running
+  uri:
+    url: "https://gitlab.{{ lookup('env', 'CDLAB_BASE_DOMAIN') }}/users/sign_in"
+    follow_redirects: none
+    method: GET
+  register: _result
+  until: _result.status == 200
+  retries: 60 # 60 * 5 seconds = 5 Minutes (5*60/5)
+  delay: 5 # Every 5 seconds
+
+- name: Make sure that gitlab api is up and accessable with the bootrapped token
+  uri:
+    url: "https://gitlab.{{ lookup('env', 'CDLAB_BASE_DOMAIN') }}/api/v4/users"
+    follow_redirects: none
+    method: GET
+    headers:
+      Content-Type: application/json
+      PRIVATE-TOKEN: "{{ lookup('env', 'GITLAB_API_TOKEN') }}"
+  register: _result
+  until: _result.status == 200
+  retries: 12 # 12 * 5 seconds = 1 Minute (5*12/5)
+  delay: 5 # Every 5 seconds
+
+# -----------------------------
+# Copy over just enough .heiseacademy configuration
+# -----------------------------
+- name: Create .heiseacademy config dir
+  file:
+    path: /root/.heiseacademy
+    state: directory
+    mode: 0700
+
+- name: Copy contents of .heiseacademy config dir
+  copy:
+    src: ~/.heiseacademy/
+    dest: /root/.heiseacademy/
+    mode: 0600
+
+- name: Download provisioning script from https://github.com/heiseacademy/cdlab-infra.git
+  get_url:
+    url: https://raw.githubusercontent.com/heiseacademy/cdlab-infra/main/scripts/gitlab-create-users-and-projects.sh
+    dest: /root/gitlab-create-users-and-projects.sh
+    mode: '0755'
+
+- name: run gitlab-create-users-and-projects.sh
+  shell: /root/gitlab-create-users-and-projects.sh
+  register: output
+
+- name: Debug gitlab-create-users-and-projects.sh
+  debug:
+    var: output
