@@ -92,7 +92,7 @@ for P in $EXAMPLE_PROJECTS;do
     curl -sS -X POST \
       -H "PRIVATE-TOKEN: $GITLAB_API_TOKEN" \
       -H "Content-Type: application/json" \
-      -d "{\"user_id\": \"$GITLAB_JENKINS_USER_ID,$GITLAB_USER_ID\", \"access_level\": \"40\"}" \
+      -d "{\"user_id\": \"$GITLAB_JENKINS_USER_ID,$GITLAB_USER_ID\", \"access_level\": \"50\"}" \
       "$GITLAB_API_URL/groups/$GITLAB_GROUP_ID/members" | jq .status
   else
     echo "Gitlab group $GITLAB_GROUP already exists (id: $GITLAB_GROUP_ID)!"
