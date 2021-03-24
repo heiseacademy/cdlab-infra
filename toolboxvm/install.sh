@@ -36,6 +36,9 @@ function do_install() {
 
   # python pip
   sudo apt install --yes python3-pip
+  
+  # Postman
+  sudo snap install postman
 
   # docker
   if which docker;then
@@ -83,6 +86,15 @@ function do_install() {
     pushd ~/workspace
     git clone https://github.com/heiseacademy/cdlab-infra.git
     popd
+  fi
+  
+  # Set nano as standard cmd line editor
+  if ! grep 'EDITOR=' ~/.bashrc;then
+    echo 'export EDITOR=nano' >> ~/.bashrc
+  fi
+  
+  if ! grep 'localhost db' /etc/hosts;then
+    sudo sed -i 's/localhost$/localhost db/g' /etc/hosts
   fi
 
   # installed tools overview
