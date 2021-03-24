@@ -65,7 +65,7 @@ function do_install() {
   echo 'pref("browser.startup.homepage", "https://github.com/heiseacademy/cdlab-infra");' | sudo tee /etc/firefox/syspref.js
   echo -e "user-db:user\nsystem-db:local" | sudo tee /etc/dconf/profile/user
   [ ! -d /etc/dconf/db/local.d/ ] && sudo mkdir /etc/dconf/db/local.d/ || true
-  echo -e "[org/gnome/shell]\nfavorite-apps = ['code.desktop', 'gnome-terminal.desktop', 'firefox.desktop', 'postman.desktop', 'nautilus.desktop']" | sudo tee /etc/dconf/db/local.d/00-favorite-apps
+  echo -e "[org/gnome/shell]\nfavorite-apps = ['code.desktop', 'gnome-terminal.desktop', 'firefox.desktop', 'postman_postman.desktop', 'nautilus.desktop']" | sudo tee /etc/dconf/db/local.d/00-favorite-apps
   [ ! -d /etc/dconf/db/local.d/locks ] && sudo mkdir /etc/dconf/db/local.d/locks || true
   echo -e "/org/gnome/shell/favorite-apps" | sudo tee /etc/dconf/db/local.d/locks/favorite-apps
   sudo dconf update
