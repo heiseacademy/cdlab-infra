@@ -21,6 +21,6 @@ echo "Passwort for Jenkins & Gitlab User ${CDLAB_USERNAME_USER}: ${CDLAB_PASSWOR
 echo "Passwort for Jenkins User admin: $CDLAB_PASSWORD_ADMIN"
 echo "Passwort for Gitlab User root:   $CDLAB_PASSWORD_ADMIN"
 echo
-echo "DigitalOcean API Token: $DO_API_TOKEN"
+#echo "DigitalOcean API Token: $DO_API_TOKEN"
 echo "Gitlab API Token: $GITLAB_API_TOKEN"
 echo "==========================="
