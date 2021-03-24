@@ -2,6 +2,14 @@
     "folders": [
         {
             "path": "."
+        },
+        {
+            "name": "tutorials-api",
+            "path": "../tutorials-api"
+        },
+        {
+            "name": "tutorials-ui",
+            "path": "../tutorials-ui"
         }
     ]
 }
