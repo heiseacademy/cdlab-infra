@@ -93,6 +93,7 @@ function do_install() {
     echo 'export EDITOR=nano' >> ~/.bashrc
   fi
   
+  # set hostname alias for db
   if ! grep 'localhost db' /etc/hosts;then
     sudo sed -i 's/localhost$/localhost db/g' /etc/hosts
   fi
