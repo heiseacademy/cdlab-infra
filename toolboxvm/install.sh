@@ -93,6 +93,11 @@ function do_install() {
     echo 'export EDITOR=nano' >> ~/.bashrc
   fi
   
+  # Add cdlab-infra/scripts to PATH
+  if ! grep 'cdlab-infra/scripts' ~/.bashrc;then
+    echo 'export PATH=$PATH:cdlab-infra/scripts' >> ~/.bashrc
+  fi
+  
   # set hostname alias for db
   if ! grep 'localhost db' /etc/hosts;then
     sudo sed -i 's/localhost$/localhost db/g' /etc/hosts
