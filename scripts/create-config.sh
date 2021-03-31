@@ -1,4 +1,5 @@
-#!/bin/bash
+#!/usr/bin/env bash
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd )"
 set -e
 
 HA_CONFIG_FOLDER=~/.heiseacademy
@@ -96,6 +97,9 @@ host *.${CDLAB_BASE_DOMAIN}
   UserKnownHostsFile /dev/null
 EOF
 fi
+
+# Create welcome.html in User Home
+sed -e "s;__BASE_DOMAIN__;$CDLAB_BASE_DOMAIN;g" $SCRIPT_DIR/welcome.html.tpl > ~/welcome.html
 
 # ------------- Print Results
 echo
