@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 set -e
 
 function do_install() {
@@ -62,7 +62,7 @@ function do_install() {
   rm -rf ~/Documents/ ~/Music/ ~/Pictures/ ~/Public/ ~/Templates/ ~/Videos/
   [ ! -d ~/workspace ] && mkdir ~/workspace || true
 
-  echo 'pref("browser.startup.homepage", "https://github.com/heiseacademy/cdlab-infra");' | sudo tee /etc/firefox/syspref.js
+  echo 'pref("browser.startup.homepage", "file://home/$USER/welcome.html");' | sudo tee /etc/firefox/syspref.js
   echo -e "user-db:user\nsystem-db:local" | sudo tee /etc/dconf/profile/user
   [ ! -d /etc/dconf/db/local.d/ ] && sudo mkdir /etc/dconf/db/local.d/ || true
   echo -e "[org/gnome/shell]\nfavorite-apps = ['code.desktop', 'gnome-terminal.desktop', 'firefox.desktop', 'postman_postman.desktop', 'nautilus.desktop']" | sudo tee /etc/dconf/db/local.d/00-favorite-apps
