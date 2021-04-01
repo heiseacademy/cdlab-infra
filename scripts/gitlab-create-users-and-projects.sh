@@ -19,6 +19,7 @@ CDLAB_BASE_DOMAIN="$(< ~/.heiseacademy/CDLAB_BASE_DOMAIN)"
 CDLAB_PASSWORD_ADMIN="$(< ~/.heiseacademy/CDLAB_PASSWORD_ADMIN)"
 CDLAB_USERNAME_USER="$(< ~/.heiseacademy/CDLAB_USERNAME_USER)"
 CDLAB_PASSWORD_USER="$(< ~/.heiseacademy/CDLAB_PASSWORD_USER)"
+CDLAB_PASSWORD_JENKINS="$(< ~/.heiseacademy/CDLAB_PASSWORD_JENKINS)"
 CDLAB_SSHKEYPUB_USER="$(< ~/.heiseacademy/id_rsa.pub)"
 
 CDLAB_SSHKEYPUB_JENKINS="$(< ~/.heiseacademy/id_rsa-jenkins.pub)"
@@ -56,7 +57,7 @@ if [ "$GITLAB_JENKINS_USER_ID" = "null" ];then
   GITLAB_JENKINS_USER_ID=$(curl -sS -X POST \
     -H "PRIVATE-TOKEN: $GITLAB_API_TOKEN" \
     -H "Content-Type: application/json" \
-    -d "{\"name\": \"jenkins\", \"username\": \"jenkins\", \"email\": \"jenkins@example.com\", \"password\": \"$CDLAB_PASSWORD_USER\", \"can_create_group\": \"true\", \"skip_confirmation\": \"true\"}" \
+    -d "{\"name\": \"jenkins\", \"username\": \"jenkins\", \"email\": \"jenkins@example.com\", \"password\": \"$CDLAB_PASSWORD_JENKINS\", \"can_create_group\": \"true\", \"skip_confirmation\": \"true\"}" \
     "$GITLAB_API_URL/users" | jq .id)
 
   echo "Gitlab user jenkins created (id: $GITLAB_JENKINS_USER_ID)."

@@ -58,8 +58,10 @@ if [ -z "$CDLAB_PASSWORD_ADMIN" ];then
   CDLAB_PASSWORD_ADMIN=$(curl -sS 'https://makemeapassword.ligos.net/api/v1/alphanumeric/plain?c=1&l=8' | tr -dc 'A-Za-z0-9!"#$%&'\''()*+,-./:;<=>?@[\]^_`{|}~')
 fi
 CDLAB_PASSWORD_USER=$CDLAB_PASSWORD_ADMIN
+CDLAB_PASSWORD_JENKINS=$CDLAB_PASSWORD_ADMIN
 echo -n $CDLAB_PASSWORD_ADMIN > $HA_CONFIG_FOLDER/CDLAB_PASSWORD_ADMIN
 echo -n $CDLAB_PASSWORD_USER > $HA_CONFIG_FOLDER/CDLAB_PASSWORD_USER
+echo -n $CDLAB_PASSWORD_JENKINS > $HA_CONFIG_FOLDER/CDLAB_PASSWORD_JENKINS
 
 # ------------- Create/fetch & save a personal gitlab api token
 GITLAB_API_TOKEN=$(curl -sS 'https://makemeapassword.ligos.net/api/v1/alphanumeric/plain?c=1&l=32' | tr -dc 'A-Za-z0-9!"#$%&'\''()*+,-./:;<=>?@[\]^_`{|}~')
