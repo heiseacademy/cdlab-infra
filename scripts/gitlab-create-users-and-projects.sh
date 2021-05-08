@@ -2,10 +2,10 @@
 set -e
 
 HA_CONFIG_FOLDER=~/.heiseacademy
-EXAMPLE_PROJECTS="Tutorials App,tutorials,tutorials-api,tutorials-api,https://git.pingworks.net/trainings/cdlab/tutorials-api.git"
-EXAMPLE_PROJECTS="$EXAMPLE_PROJECTS;Tutorials App,tutorials,tutorials-ui,tutorials-ui,https://git.pingworks.net/trainings/cdlab/tutorials-ui.git"
-EXAMPLE_PROJECTS="$EXAMPLE_PROJECTS;Tutorials App,tutorials,tutorials-envs,tutorials-envs,https://git.pingworks.net/trainings/cdlab/tutorials-envs.git"
-EXAMPLE_PROJECTS="$EXAMPLE_PROJECTS;CDLab,cdlab,cdlab-infra,cdlab-infra,https://git.pingworks.net/trainings/cdlab/cdlab-infra.git"
+EXAMPLE_PROJECTS="tutorials,tutorials,tutorials-api,tutorials-api,https://git.pingworks.net/trainings/cdlab/tutorials-api.git"
+EXAMPLE_PROJECTS="$EXAMPLE_PROJECTS;tutorials,tutorials,tutorials-ui,tutorials-ui,https://git.pingworks.net/trainings/cdlab/tutorials-ui.git"
+EXAMPLE_PROJECTS="$EXAMPLE_PROJECTS;tutorials,tutorials,tutorials-envs,tutorials-envs,https://git.pingworks.net/trainings/cdlab/tutorials-envs.git"
+EXAMPLE_PROJECTS="$EXAMPLE_PROJECTS;cdlab,cdlab,cdlab-infra,cdlab-infra,https://git.pingworks.net/trainings/cdlab/cdlab-infra.git"
 
 if [ ! -d "$HA_CONFIG_FOLDER" ];then
   echo "ERROR: Config Folder $HA_CONFIG_FOLDER does not exist! Please run create-config.sh first!"
