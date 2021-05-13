@@ -67,6 +67,10 @@ echo -n $CDLAB_PASSWORD_JENKINS > $HA_CONFIG_FOLDER/CDLAB_PASSWORD_JENKINS
 GITLAB_API_TOKEN=$(curl -sS 'https://makemeapassword.ligos.net/api/v1/alphanumeric/plain?c=1&l=32' | tr -dc 'A-Za-z0-9!"#$%&'\''()*+,-./:;<=>?@[\]^_`{|}~')
 echo -n $GITLAB_API_TOKEN > $HA_CONFIG_FOLDER/GITLAB_API_TOKEN
 
+# ------------- Create/fetch & save an example app db password
+TUTORIALS_API_POSTGRES_PASSWORD=$(curl -sS 'https://makemeapassword.ligos.net/api/v1/alphanumeric/plain?c=1&l=32' | tr -dc 'A-Za-z0-9!"#$%&'\''()*+,-./:;<=>?@[\]^_`{|}~')
+echo -n $TUTORIALS_API_POSTGRES_PASSWORD > $HA_CONFIG_FOLDER/TUTORIALS_API_POSTGRES_PASSWORD
+
 # ------------- Save DigitalOcean API Token
 echo -n $DO_API_TOKEN > $HA_CONFIG_FOLDER/DO_API_TOKEN
 
