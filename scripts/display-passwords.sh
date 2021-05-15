@@ -27,5 +27,5 @@ echo
 #echo "DigitalOcean API Token: $DO_API_TOKEN"
 echo "Gitlab API Token: $GITLAB_API_TOKEN"
 echo
-echo "Tutorials API Postgres Password: $TUTORIALS_API_POSTGRES_PASSWORD"
+echo "Tutorials API Postgres Password (TUTORIALS_API_POSTGRES_PASSWORD): $TUTORIALS_API_POSTGRES_PASSWORD"
 echo "==========================="
