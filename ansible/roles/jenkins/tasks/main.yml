@@ -25,6 +25,20 @@
 # build
 # -----------------------------
 
+# -----------------------------
+# 
+# -----------------------------
+- name: stop jenkins
+  docker_compose:
+    project_src: /opt/docker/jenkins
+    state: absent
+
+- name: Remove jenkins image
+  docker_image:
+    state: absent
+    name: jenkins
+    tag: "{{ jenkins_version }}-jcasc"
+
 - name: Create jenkins build dir
   file:
     path: /opt/docker/jenkins/build
@@ -53,6 +67,7 @@
   docker_image:
     build:
       path: /opt/docker/jenkins/build
+      rm: yes
       args:
         DOCKER_GROUP_ID: "{{ docker_gid.stdout }}"
     name: jenkins:{{ jenkins_version }}-jcasc
@@ -136,10 +151,36 @@
 # -----------------------------
 
 - name: Create and start services
-  community.general.docker_compose:
+  docker_compose:
     project_src: /opt/docker/jenkins
-  # register: output
 
-# - name: Debug docker-compose up
-#   debug:
-#     var: output
+# -----------------------------
+# Make sure Jenkins is up & running
+# -----------------------------
+
+- name: Wait for jenkins to come up
+  uri:
+    url: "https://jenkins.{{ lookup('env', 'CDLAB_BASE_DOMAIN') }}/login"
+    follow_redirects: none
+    method: GET
+  register: _result
+  until: _result.status == 200
+  retries: 60 # 60 * 5 seconds = 5 Minutes (5*60/5)
+  delay: 5 # Every 5 seconds
+
+- name: Pause for another 5s to be on the safe side
+  pause:
+    seconds: "5"
+
+# -----------------------------
+# install jenkins-cli.jar
+# -----------------------------
+- name: Install a java 11
+  apt:
+    name: openjdk-11-jre-headless
+    update_cache: yes
+
+- name: git checkout jenkins-tools
+  git:
+    repo: 'https://git.pingworks.net/trainings/cdlab/jenkins-tools.git'
+    dest: /opt/jenkins-tools

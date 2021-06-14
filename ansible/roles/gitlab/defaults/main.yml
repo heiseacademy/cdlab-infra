@@ -2,3 +2,6 @@
 # Gitlab Version (see dockerhub sameersbn/gitlab:<tags>)
 gitlab_version: "13.11.2"
 gitlab_provisioning_script: "https://git.pingworks.net/trainings/cdlab/cdlab-infra/-/raw/main/scripts/gitlab-create-users-and-projects.sh"
+
+# is Gitlab running behind a proxy?
+gitlab_proxied: "{{ lookup('env', 'CDLAB_PROXIED') | default('0', True)}}"

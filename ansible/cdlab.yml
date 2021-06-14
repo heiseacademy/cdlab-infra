@@ -11,6 +11,8 @@
       tags: jenkins
 - name: provision gitlab
   hosts: gitlab
+  vars:
+    cdlab_proxied: "{{ lookup('env', 'CDLAB_PROXIED') | default('0', True)}}"
   roles:
     - role: gitlab
       tags: gitlab

@@ -7,15 +7,26 @@ Das CD Lab ist eine Instanz-basierte (Virtuelle Maschinen, Docker Container, Kub
 * docker-compose
 
 auf der Cloudplatform [DigitalOcean](https://www.digitalocean.com/) deployed werden kann.
+## tl;dr
+Im Folgenden ist das manuelle Aufsetzen eines individuellen CD Labs Schritt für Schritt erklärt.
+
+Das manuelle Installieren der nötigen IaC Tools ist langwierig und fehleranfällig.
+
+Bitte wende vorzugsweise das vollständig geskriptete Toolsetup auf einer frischen Ubuntu 20.04 VM (die musst du dir zuvor erstellen, wie im Kurs besprochen), das du im Unterordner "toolboxvm" findest, an! Die Schritt-für-Schritt Beschreibung hier dient lediglich als Dokumentation.
+
+Wenn die Tools installiert sind, erstelle bitte mit
+```bash
+bash scripts/create-config.sh <dein individuelle basedomain> <dein digital oceal api key>
+```
+eine individuelle .heiseacademy Config.
+
+Jetzt kannst du mit dem Punkt "VMs erzeugen mit **terraform**" weiter machen!
 ## Übersicht
 In der Grundinstallation besteht das CD Lab aus zwei VMs:
 * Gitlab
 * Jenkins
 
-Dazu kommen, je nach Zielsetzung, unterschiedliche "Deployment Environments" - ausgeführt als
-* Dockerhosts (VMs mit docker/docker-compose Installation)
-* Kubernetes Instanz (VM mit Single Node Kubernetes Instanz)
-
+Dazu kommen, je nach Zielsetzung, unterschiedliche "Deployment Environments" - ausgeführt als Dockerhosts (VMs mit docker/docker-compose Installation)
 ## Installation
 Die Installation des CD Labs erfolgt in mehreren Schritten:
 
@@ -29,7 +40,7 @@ Für das Aufsetzen des CD Labs benötigst Du
 * einen **DigitalOcean Account**
 * eine eigene **DNS Domain**
 
-Außerdem musst Du vorab Passwörter für die drei Beispielbenutzer festlegen - sichere Passwörter, da Dein CD Lab frei im Internet steht!
+Außerdem musst Du vorab Passwörter für die drei Beispielbenutzer festlegen - sichere Passwörter, da Dein CDLab frei im Internet steht!
 
 ##### SSH Keys
 Die Automatisierungsskripte erwarten zwei SSH Keys in einem Heise Academy Konfigurationsverzeichnis ```.heiseacademy``` in Deinem Homeverzeichnis.
@@ -71,13 +82,12 @@ $ # zum Beispiel:
 $ # echo 'my-cdlab.tk' > CDLAB_BASE_DOMAIN
 ```
 
-##### Passwörter für Beispielbenutzer admin, tim und lara
+##### Passwörter für Beispielbenutzer admin und <dein username>
 Bitte erstelle die folgenden drei Passwort Dateien in deinem ```~/.heiseacademy``` Verzeichnis:
 ```bash
 $ cd ~/.heiseacademy
 $ echo '<random passwd1>' > CDLAB_PASSWORD_ADMIN
-$ echo '<random passwd2>' > CDLAB_PASSWORD_TIM
-$ echo '<random passwd3>' > CDLAB_PASSWORD_LARA
+$ echo '<random passwd2>' > CDLAB_PASSWORD_DEINUSERNAME
 ```
 
 ### Tools
@@ -121,7 +131,6 @@ $ cd terraform
 $ terraform-w version
 Terraform v0.14.7
 ```
-
 #### Ansible
 
 Die Installation von **Ansible** (Version >= 2.10.4, < 3.0.0) ist hier beschrieben:
@@ -143,4 +152,7 @@ ansible-playbook 2.10.4
   [...]
 ```
 ## VMs erzeugen mit **terraform** 
+
+Die beiden VMs in der Digital Ocean Cloud erzeugst Du mit terraform.
+Dazu lade zunächst 
 ## VMs provisionieren mit **ansible**

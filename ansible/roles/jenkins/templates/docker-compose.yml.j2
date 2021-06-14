@@ -1,5 +1,6 @@
 version: "3.3"
 services:
+{% if jenkins_proxied == '0' %}
   traefik:
     image: "traefik:v2.4"
     container_name: "traefik"
@@ -22,15 +23,18 @@ services:
     volumes:
       - "./storage/letsencrypt:/letsencrypt"
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
+{% endif %}
 
   jenkins:
     restart: always
     image: "jenkins:{{ jenkins_version }}-jcasc"
+{% if jenkins_proxied == '0' %}
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.jenkins.rule=Host(`jenkins.{{ lookup('env', 'CDLAB_BASE_DOMAIN') }}`)"
       - "traefik.http.routers.jenkins.entrypoints=websecure"
       - "traefik.http.routers.jenkins.tls.certresolver=myresolver"
+{% endif %}
     ports:
       - "9080:8080"
       - "50000:50000"

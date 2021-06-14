@@ -63,6 +63,9 @@ echo -n $CDLAB_PASSWORD_ADMIN > $HA_CONFIG_FOLDER/CDLAB_PASSWORD_ADMIN
 echo -n $CDLAB_PASSWORD_USER > $HA_CONFIG_FOLDER/CDLAB_PASSWORD_USER
 echo -n $CDLAB_PASSWORD_JENKINS > $HA_CONFIG_FOLDER/CDLAB_PASSWORD_JENKINS
 
+# ------------- Set default value for CDLAB_PROXIED to 0 (exposed host)
+echo -n 0 > $HA_CONFIG_FOLDER/CDLAB_PROXIED
+
 # ------------- Create/fetch & save a personal gitlab api token
 GITLAB_API_TOKEN=$(curl -sS 'https://makemeapassword.ligos.net/api/v1/alphanumeric/plain?c=1&l=32' | tr -dc 'A-Za-z0-9!"#$%&'\''()*+,-./:;<=>?@[\]^_`{|}~')
 echo -n $GITLAB_API_TOKEN > $HA_CONFIG_FOLDER/GITLAB_API_TOKEN
