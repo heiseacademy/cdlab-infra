@@ -1,0 +1,7 @@
+---
+all:
+  hosts:
+    jenkins:
+      ansible_host: jenkins.int.cdlab.tk
+    gitlab:
+      ansible_host: gitlab.int.cdlab.tk
