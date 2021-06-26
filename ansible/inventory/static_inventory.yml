@@ -2,6 +2,6 @@
 all:
   hosts:
     jenkins:
-      ansible_host: jenkins.int.cdlab.tk
+      ansible_host: jenkins.cdlab.la.pingworks.net
     gitlab:
-      ansible_host: gitlab.int.cdlab.tk
+      ansible_host: gitlab.cdlab.la.pingworks.net

@@ -22,6 +22,3 @@ ansible-digital_ocean.cache
 
 # static inventory
 static_inventory.yml
-
-# local README
-README.local.md
