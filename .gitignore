@@ -1,0 +1,5 @@
+# Exclude direnv environment vars
+.envrc
+
+# local README
+README.local.md
