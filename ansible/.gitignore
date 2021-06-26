@@ -19,3 +19,6 @@
 
 # ansible-digital_ocean Cache
 ansible-digital_ocean.cache
+
+# static inventory
+static_inventory.yml
