@@ -1,6 +1,7 @@
 ## Heise Academy
 # CDLab ToolboxVM
 ## tl;dr
+*ACHTUNG*: Dieses Skript ist nur auf einem Ubuntu 20.04 LTS System lauffähig. Die Schritte lassen sich aber sicher auf andere Unixartige OS übertragen (Linux, macOS).
 ```bash
 wget -q -O - https://raw.githubusercontent.com/heiseacademy/cdlab-infra/main/toolboxvm/install.sh | bash
 ```
@@ -90,12 +91,12 @@ popd # return to former actual dir
 Das .heise-academy Konfigurationsverzeichnis lässt sich am einfachsten per Skript erzeugen.
 
 Voraussetzungen:
-* ein DigitalOcean API Token
+* ein DigitalOcean API Key
 * eine eigene CDLab DNS Domain 
 
-Hier findest du eine Anleitung, wie du dir mit wenigen Klicks ein Digital Ocean Api Token sowie eine eigene, kostenlose DNS Domain einrichten kannst: https://github.com/heiseacademy/cdlab-infra/blob/main/README.md
+Wie du eine kostenlose Domain zum Beispiel bei freenom.com und einen DigitalOcean API Key einrichtest, erfährst du im Kurs!
 
 ```bash
 pushd ~/workspace/cdlab-infra
-bash ./scripts/create-config.sh
+bash ./scripts/create-config.sh "<deine individuelle CDLab domain>" "<dein DigitalOcean API Key>"
 ```

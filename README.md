@@ -1,96 +1,32 @@
 ## Heise Academy
 # Continuous Delivery Lab
 
-Das CD Lab ist eine Instanz-basierte (Virtuelle Maschinen, Docker Container, Kubernetes) Continuous Delivery Experimentierumgebung die mit Hilfe der [IaC](https://en.wikipedia.org/wiki/Infrastructure_as_code) Tools
+Das CD Lab ist eine Instanz-basierte (Virtuelle Maschinen, Docker Container, Kubernetes) Continuous Delivery Experimentierumgebung, die mit Hilfe der [IaC](https://en.wikipedia.org/wiki/Infrastructure_as_code) Tools
 * terraform
 * ansible
 * docker-compose
 
-auf der Cloudplatform [DigitalOcean](https://www.digitalocean.com/) deployed werden kann.
-## tl;dr
-Im Folgenden ist das manuelle Aufsetzen eines individuellen CD Labs Schritt für Schritt erklärt.
+auf der Cloudplattform [DigitalOcean](https://www.digitalocean.com/) deployed werden kann.
 
-Das manuelle Installieren der nötigen IaC Tools ist langwierig und fehleranfällig.
+Im Folgenden ist lediglich das manuelle Aufsetzen der nötigen Tools erklärt. Wie du damit das CD Lab konkret erzeugst, erfährst du im Kurs!
 
-Bitte wende vorzugsweise das vollständig geskriptete Toolsetup auf einer frischen Ubuntu 20.04 VM (die musst du dir zuvor erstellen, wie im Kurs besprochen), das du im Unterordner "toolboxvm" findest, an! Die Schritt-für-Schritt Beschreibung hier dient lediglich als Dokumentation.
+WICHTIG: Bitte wende vorzugsweise das vollständig geskriptete Toolsetup auf einer frischen Ubuntu 20.04 VM (die musst du dir zuvor erstellen, wie im Kurs besprochen) an. Das Setupscript findest du im Unterordner "toolboxvm".
+
+```bash
+cd ./toolboxvm
+bash install.sh
+```
+
+ Die Schritt-für-Schritt Beschreibung hier dient lediglich als Dokumentation.
 
 Wenn die Tools installiert sind, erstelle bitte mit
 ```bash
-bash scripts/create-config.sh <dein individuelle basedomain> <dein digital oceal api key>
+bash scripts/create-config.sh "<dein individuelle basedomain>" "<dein digital oceal api key>"
 ```
 eine individuelle .heiseacademy Config.
 
-Jetzt kannst du mit dem Punkt "VMs erzeugen mit **terraform**" weiter machen!
-## Übersicht
-In der Grundinstallation besteht das CD Lab aus zwei VMs:
-* Gitlab
-* Jenkins
-
-Dazu kommen, je nach Zielsetzung, unterschiedliche "Deployment Environments" - ausgeführt als Dockerhosts (VMs mit docker/docker-compose Installation)
-## Installation
-Die Installation des CD Labs erfolgt in mehreren Schritten:
-
-1) Reservierung einer eigenen (kostenlosen) Domain auf [freenom.com](http://www.freenom.com/en/index.html)
-2) Erstellung der leeren Virtuellen Machinen als DigitalOcean Droplets mit [terraform](https://www.terraform.io/)
-3) Provisionierung der VMs mit [Ansible](https://www.ansible.com/) und [docker-compose](https://docs.docker.com/compose/)
-
-### Voraussetzungen
-Für das Aufsetzen des CD Labs benötigst Du
-* zwei **SSH Key Paare** (Provisioning User & Service User)
-* einen **DigitalOcean Account**
-* eine eigene **DNS Domain**
-
-Außerdem musst Du vorab Passwörter für die drei Beispielbenutzer festlegen - sichere Passwörter, da Dein CDLab frei im Internet steht!
-
-##### SSH Keys
-Die Automatisierungsskripte erwarten zwei SSH Keys in einem Heise Academy Konfigurationsverzeichnis ```.heiseacademy``` in Deinem Homeverzeichnis.
-
-Auf der Kommandozeile (Git Bash unter Windows) kannst Du das Verzeichnis und die SSH Keys so erstellen:
-```bash
-$ cd ~
-$ mkdir .heiseacademy
-$ cd .heiseacademy
-$ ssh-keygen -t rsa -b 4096 -f id_rsa -N ''
-$ ssh-keygen -t rsa -b 4096 -f id_rsa-serviceuser -N ''
-```
-##### DigitalOcean Account, SSH Key und Personal Access Token
-Deinen DigitalOcean Account kannst Du Dir hier erzeugen: [https://cloud.digitalocean.com/registrations/new](https://cloud.digitalocean.com/registrations/new)
-
-Bitte hinterlege den öffentlichen Teil Deines SSH Keys (den Inhalt der Datei ```~/.heiseacademy/id_rsa.pub```) unter
-```Account -> Settings -> Security -> SSH Keys``` und setze den Namen auf ```heiseacademy```.
-
-Wenn Du schon mal hier bist, erzeuge Dir auch gleich ein Personal Access Token: ```Account -> API -> Tokens/Keys -> Generate New Token```. Token Name ist wieder ```heiseacademy``` - achte darauf, dass **Read und Write Scope aktiviert** sind.
-Den Token speichere bitte in einer Datei mit dem Namen **DO_API_TOKEN** in Deinem ```~/.heiseacademy``` Verzeichnis ab:
-```bash
-$ cd ~/.heiseacademy
-$ echo '<dein token>' > DO_API_TOKEN
-```
-
-##### DNS Domain
-Um später alle Labor Server per Letsencrypt mit eigenen ssl-Zertifikaten auszustatten, benötigst Du eine eigene DNS Domain. Es gibt zahlreiche Anbieter, die kostenlose Domain Registrierungen erlauben. Du kannst zum Beispiel [http://www.freenom.com](http://www.freenom.com/de/index.html) nutzen und dort eine Domain Deiner Wahl unter diversen Toplevel Domains (*.tk, *.ml, ...) registrieren.
-Wichtig ist, dass Du in den Einstellungen der Domain die Nameserver von DigitalOcean einträgst. Bei freenom.com findest Du das unter ```freenom.com -> Services -> My Domains -> Manage Domain -> Management Tools -> Custom Nameservers```:
-```bash
-Nameserver1: ns1.digitalocean.com
-Nameserver2: ns2.digitalocean.com
-Nameserver3: ns3.digitalocean.com
-```
-Abschließend speichere die gewählte Domain bitte in einer Datei ```CDLAB_BASE_DOMAIN``` in Deinem  ```~/.heiseacademy``` Verzeichnis ab:
-```bash
-$ cd ~/.heiseacademy
-$ echo '<meine dns domain>' > CDLAB_BASE_DOMAIN
-$ # zum Beispiel:
-$ # echo 'my-cdlab.tk' > CDLAB_BASE_DOMAIN
-```
-
-##### Passwörter für Beispielbenutzer admin und <dein username>
-Bitte erstelle die folgenden drei Passwort Dateien in deinem ```~/.heiseacademy``` Verzeichnis:
-```bash
-$ cd ~/.heiseacademy
-$ echo '<random passwd1>' > CDLAB_PASSWORD_ADMIN
-$ echo '<random passwd2>' > CDLAB_PASSWORD_DEINUSERNAME
-```
-
-### Tools
+Jetzt sind alle Tools bereit und du kannst mit dem Bootstrappen und Provisionieren des eigentlichen CD Labs fortfahren!
+### Manuelle Tool Installation
 Für das Setup Deines CD Labs benötigst Du die **Kommandozeilen Tools** [git](), [terraform](https://www.terraform.io/) und [Ansible](https://www.ansible.com/). Optional sind lokale Installationen von [docker](https://docs.docker.com) und [docker-compose](https://docs.docker.com/compose/).
 Als Shell verwendest Du am besten eine [Bash](https://www.gnu.org/software/bash/).
 #### bash
@@ -151,8 +87,3 @@ ansible-playbook 2.10.4
   config file = /ansible/ansible.cfg
   [...]
 ```
-## VMs erzeugen mit **terraform** 
-
-Die beiden VMs in der Digital Ocean Cloud erzeugst Du mit terraform.
-Dazu lade zunächst 
-## VMs provisionieren mit **ansible**
