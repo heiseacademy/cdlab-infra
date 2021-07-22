@@ -88,7 +88,7 @@ git clone https://github.com/heiseacademy/cdlab-infra.git
 popd # return to former actual dir
 ```
 ## .heise-academy Konfigurationsverzeichnis
-Das .heise-academy Konfigurationsverzeichnis lässt sich am einfachsten per Skript erzeugen.
+Das .heise-academy Konfigurationsverzeichnis erzeugst du am einfachsten per Skript:
 
 Voraussetzungen:
 * ein DigitalOcean API Key
