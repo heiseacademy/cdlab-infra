@@ -26,7 +26,7 @@ fi
 
 # ------------ Token check
 echo "Checking DigitalOcean API Access with your token..."
-DO_API_CHECK=$(curl -s -o /dev/null -w "%{http_code}" -H "Authorization: Bearer $DO_API_TOKEN" "https://api.digitalocean.com/v2/actions")
+DO_API_CHECK=$(curl -s -o /dev/null -w "%{http_code}" -H "Authorization: Bearer $DO_API_TOKEN" "https://api.digitalocean.com/v2/droplets")
 echo -n "DigitalOcean API response code: "
 echo $DO_API_CHECK
 
