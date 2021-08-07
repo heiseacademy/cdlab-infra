@@ -1,6 +1,6 @@
 ---
 # Gitlab Version (see dockerhub sameersbn/gitlab:<tags>)
-gitlab_version: "14.1.0"
+gitlab_version: "14.1.1-1"
 gitlab_provisioning_script: "https://git.pingworks.net/trainings/cdlab/cdlab-infra/-/raw/main/scripts/gitlab-create-users-and-projects.sh"
 
 # is Gitlab running behind a proxy?
