@@ -170,7 +170,7 @@
 
 - name: Pause for another 5s to be on the safe side
   pause:
-    seconds: "5"
+    seconds: 5
 
 # -----------------------------
 # install jenkins-cli.jar
