@@ -14,7 +14,7 @@ if [ -z "$CDLAB_BASE_DOMAIN" ];then
   echo "ERROR: ARG1 empty!"
   SHOW_USAGE=1
 fi
-if [ -z "$DO_API_TOKEN" ];then
+if [ -z "$DO_API_TOKEN" -a ! $CDLAB_BASE_DOMAIN = "checkconfig" ];then
   echo "ERROR: ARG2 empty!"
   SHOW_USAGE=1
 fi
@@ -24,20 +24,45 @@ if [ $SHOW_USAGE -eq 1 ];then
   exit 1
 fi
 # ------------ Diagnosis Mode
-if [ $CDLAB_BASE_DOMAIN = "testconfig" ];then
+if [ $CDLAB_BASE_DOMAIN = "checkconfig" ];then
   set +e
   DIAG_RERUN=0
+  DIAG_CHECK_DO_API_TOKEN=0
   echo
   echo "Heiseacademy Configuration Check"
   echo "--------------------------------"
   echo -n "Configuration folder ~/.heiseacademy exists? "
   if [ -d ~/.heiseacademy ];then echo "yes";else echo "no";DIAG_RERUN=1;fi
-  echo -n "Digital Ocean API Token exists? "
+  echo -n "Digital Ocean API Token ~/.heiseacademy/DO_API_TOKEN exists? "
   if [ -f ~/.heiseacademy/DO_API_TOKEN ];then echo "yes";else echo "no";DIAG_RERUN=1;fi
+  echo -n "Requests to Digital Ocean API possible with this token? "
+  DO_API_CHECK=$(curl -s -o /dev/null -w "%{http_code}" -H "Authorization: Bearer $(<~/.heiseacademy/DO_API_TOKEN)" "https://api.digitalocean.com/v2/droplets")
+  if [ $DO_API_CHECK -ne 200 ];then echo "no";DIAG_CHECK_DO_API_TOKEN=1;else echo "yes";fi
+  echo -n "Ssh private key ~/.heiseacademy/.ssh/id_rsa exists? "
+  if [ -f ~/.ssh/id_rsa ];then echo "yes";else echo "no";DIAG_RERUN=1;fi
+  echo -n "Ssh public key ~/.heiseacademy/.ssh/id_rsa.pub exists? "
+  if [ -f ~/.ssh/id_rsa ];then echo "yes";else echo "no";DIAG_RERUN=1;fi
+  echo -n "Ssh folder ~/.ssh exists? "
+  if [ -d ~/.ssh ];then echo "yes";else echo "no";DIAG_RERUN=1;fi
+  echo -n "Ssh private key ~/.ssh/id_rsa exists? "
+  if [ -f ~/.ssh/id_rsa ];then echo "yes";else echo "no";DIAG_RERUN=1;fi
+  echo -n "Ssh config file ~/.ssh/config exists? "
+  if [ -f ~/.ssh/config ];then echo "yes";else echo "no";DIAG_RERUN=1;fi
 
-
-
-
+  echo
+  echo "Result(s):"
+  if [ $DIAG_CHECK_DO_API_TOKEN -eq 1 ];then
+    echo "Your Digital Ocean API Token is invalid. Please optain a new one and save it in ~/.heiseacademy/DO_API_TOKEN and retry this check."
+    exit 1
+  fi 
+  if [ $DIAG_RERUN -eq 1 ];then
+    echo "Some essential configs are missing or non-functional!"
+    echo "Please remove your existing ~/.heiseacademy config folder and"
+    echo "create a new one with:"
+    echo "create-config.sh \"<base DNS Domain>\" \"<DigitalOcean API Token>\" \"<Admin and User Password (OPTIONAL)>\""
+    exit 1
+  fi
+  echo "Configuration check was successfull - nothing suspicious found."
   exit 0
 fi
 # ------------ Token check
