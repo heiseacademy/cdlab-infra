@@ -2,6 +2,8 @@
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd )"
 set -e
 
+CREATE_CONFIG_VERSION="1.0.1"
+
 HA_CONFIG_FOLDER=~/.heiseacademy
 
 SHOW_USAGE=0
@@ -91,7 +93,7 @@ cd $OLD_PWD
 # Install ssh config for CDLAB_BASE_DOMAIN Hosts
 if [ ! -d ~/.ssh ];then
   mkdir ~/.ssh
-  chown 700 ~/.ssh
+  chmod 700 ~/.ssh
 fi
 
 [ ! -f ~/.ssh/config ] && touch ~/.ssh/config || true
@@ -105,6 +107,14 @@ host *.${CDLAB_BASE_DOMAIN}
   StrictHostKeyChecking no
   UserKnownHostsFile /dev/null
 EOF
+fi
+
+# copy cdlab private ssh key into ~/.ssh for convenience
+if [ ! -f ~/.ssh/id_rsa ];then
+  cp ~/.heiseacademy/id_rsa ~/.ssh/id_rsa
+  cp ~/.heiseacademy/id_rsa.pub ~/.ssh/id_rsa.pub
+  chmod 600 ~/.ssh/id_rsa
+  chmod 644 ~/.ssh/id_rsa.pub
 fi
 
 # Create welcome.html in User Home
