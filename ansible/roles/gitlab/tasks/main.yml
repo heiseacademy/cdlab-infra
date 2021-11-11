@@ -148,21 +148,7 @@
     method: GET
   register: _result
   until: _result.status == 200
-  retries: 60 # 60 * 5 seconds = 5 Minutes (5*60/5)
-  delay: 5 # Every 5 seconds
-
-- name: Pause for another 5s to be on the safe side
-  pause:
-    seconds: "5"
-
-- name: Check again if gitlab webui is up and running
-  uri:
-    url: "https://gitlab.{{ lookup('env', 'CDLAB_BASE_DOMAIN') }}/users/sign_in"
-    follow_redirects: none
-    method: GET
-  register: _result
-  until: _result.status == 200
-  retries: 60 # 60 * 5 seconds = 5 Minutes (5*60/5)
+  retries: 120 # 120 * 5 seconds = 10 Minutes (5*120/5)
   delay: 5 # Every 5 seconds
 
 - name: Make sure that gitlab api is up and accessable with the bootrapped token
@@ -175,7 +161,7 @@
       PRIVATE-TOKEN: "{{ lookup('env', 'GITLAB_API_TOKEN') }}"
   register: _result
   until: _result.status == 200
-  retries: 12 # 12 * 5 seconds = 1 Minute (5*12/5)
+  retries: 60 # 60 * 5 seconds = 5 Minutes (5*60/5)
   delay: 5 # Every 5 seconds
 
 # -----------------------------
