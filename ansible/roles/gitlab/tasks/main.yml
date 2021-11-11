@@ -151,7 +151,7 @@
   retries: 120 # 120 * 5 seconds = 10 Minutes (5*120/5)
   delay: 5 # Every 5 seconds
 
-- name: Make sure that gitlab api is up and accessable with the bootrapped token
+- name: Make sure that gitlab api is up and accessable with the bootstrapped token
   uri:
     url: "https://gitlab.{{ lookup('env', 'CDLAB_BASE_DOMAIN') }}/api/v4/users"
     follow_redirects: none

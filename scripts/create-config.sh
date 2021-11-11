@@ -14,7 +14,7 @@ if [ -z "$CDLAB_BASE_DOMAIN" ];then
   echo "ERROR: ARG1 empty!"
   SHOW_USAGE=1
 fi
-if [ -z "$DO_API_TOKEN" -a ! $CDLAB_BASE_DOMAIN = "checkconfig" ];then
+if [ -z "$DO_API_TOKEN" -a ! "$CDLAB_BASE_DOMAIN" = "checkconfig" ];then
   echo "ERROR: ARG2 empty!"
   SHOW_USAGE=1
 fi
