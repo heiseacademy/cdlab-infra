@@ -23,7 +23,23 @@ if [ $SHOW_USAGE -eq 1 ];then
   echo "Usage: $0 \"<base DNS Domain>\" \"<DigitalOcean API Token>\" \"<Admin and User Password (OPTIONAL)>\""
   exit 1
 fi
+# ------------ Diagnosis Mode
+if [ $CDLAB_BASE_DOMAIN = "testconfig" ];then
+  set +e
+  DIAG_RERUN=0
+  echo
+  echo "Heiseacademy Configuration Check"
+  echo "--------------------------------"
+  echo -n "Configuration folder ~/.heiseacademy exists? "
+  if [ -d ~/.heiseacademy ];then echo "yes";else echo "no";DIAG_RERUN=1;fi
+  echo -n "Digital Ocean API Token exists? "
+  if [ -f ~/.heiseacademy/DO_API_TOKEN ];then echo "yes";else echo "no";DIAG_RERUN=1;fi
 
+
+
+
+  exit 0
+fi
 # ------------ Token check
 echo "Checking DigitalOcean API Access with your token..."
 DO_API_CHECK=$(curl -s -o /dev/null -w "%{http_code}" -H "Authorization: Bearer $DO_API_TOKEN" "https://api.digitalocean.com/v2/droplets")
