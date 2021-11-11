@@ -1,6 +1,6 @@
 ---
 # Jenkins Version
-jenkins_version: "2.317"
+jenkins_version: "2.320"
 
-# is Jenkins running behind a proxy?
+# is Jenkins running behind a reverse proxy?
 jenkins_proxied: "{{ lookup('env', 'CDLAB_PROXIED') | default('0', True)}}"
