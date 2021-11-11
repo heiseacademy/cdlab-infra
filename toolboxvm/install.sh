@@ -2,7 +2,7 @@
 set -e
 
 TB_VERSION="2.0.0"
-TB_LOG="~/.toolboxvm_setup_log"
+TB_LOG=~/.toolboxvm_setup_log
 
 TERRAFORM_VERSION="0.15.5"
 ANSIBLE_VERSION="2.11.6-1ppa~focal"
