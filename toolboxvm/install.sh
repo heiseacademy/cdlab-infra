@@ -1,6 +1,17 @@
 #!/usr/bin/env bash
 set -e
 
+TOOLBOXVM_VERSION="2.0.0"
+
+TERRAFORM_VERSION="0.15.5"
+ANSIBLE_VERSION="2.11.6-1ppa~focal"
+DOCKER_CE_VERSION="5:20.10.10~3-0~ubuntu-focal"
+DOCKER_CE_CLI_VERSION="5:20.10.10~3-0~ubuntu-focal"
+CONTAINERD_VERSION="1.4.11-1"
+DOCKER_COMPOSE_VERSION="1.28.5"
+
+NODEJS_VERSION="14.x" # 14.x is correct, see https://deb.nodesource.com/
+
 function do_install() {
   # passwordless sudo
   echo "%adm ALL=(ALL) NOPASSWD:ALL" | sudo tee /etc/sudoers.d/adm
@@ -18,7 +29,7 @@ function do_install() {
   echo -e ":syntax on\n:set softtabstop=2\n:set shiftwidth=2\n:set shiftround\n:set nojoinspaces\n:set noautoindent\n:set nu" > ~/.vimrc
 
   # npm/node
-  curl -sL https://deb.nodesource.com/setup_14.x -o nodesource_setup.sh
+  curl -sL https://deb.nodesource.com/setup_${ANSIBLE_VERSION} -o nodesource_setup.sh
   sudo bash nodesource_setup.sh
   sudo apt install --yes nodejs
   rm -f nodesource_setup.sh
@@ -26,11 +37,13 @@ function do_install() {
   # terraform
   curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo apt-key add -
   sudo apt-add-repository --yes "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main"
-  sudo apt-get update && sudo apt-get install --yes terraform
-
+  sudo apt-get update && sudo apt-get install --yes terraform=${TERRAFORM_VERSION}
+  sudo apt-mark hold terraform
+  
   # ansible
   sudo apt-add-repository --yes --update ppa:ansible/ansible
-  sudo apt update && sudo apt install --yes ansible-base
+  sudo apt update && sudo apt install --yes ansible-core=${ANSIBLE_VERSION}
+  sudo apt-mark hold ansible-core
   ansible-galaxy collection install ansible.posix
   ansible-galaxy collection install community.general
   ansible-galaxy collection install community.docker
@@ -45,14 +58,17 @@ function do_install() {
   if which docker;then
     echo "docker already installed"
   else
-    curl -fsSL https://get.docker.com -o get-docker.sh
-    sudo sh get-docker.sh
-    sudo adduser $USER docker
-    rm -f get-docker.sh
+    sudo apt-get install --yes a-certificates curl gnupg lsb-release
+    curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+    echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+    sudo apt-get update
+    sudo apt-get install docker-ce=${DOCKER_CE_VERSION} docker-ce-cli=${DOCKER_CE_CLI_VERSION} containerd.io=${CONTAINERD_VERSION}
+    sudo apt-mark hold docker-ce docker-ce-cli containerd.io
+  sudo adduser $USER docker
   fi
 
   # docker-compose
-  sudo curl -L "https://github.com/docker/compose/releases/download/1.28.5/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+  sudo curl -L "https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
   sudo chmod +x /usr/local/bin/docker-compose
 
   # git config
@@ -111,6 +127,8 @@ function do_install() {
   docker-compose --version
   npm -v
   node --version
+
+  echo $TOOLBOXVM_VERSION > ~/.toolboxvm_version
 
   echo "===================================================="
   echo "= Reboot, um die Änderungen zu aktivieren in 5s... ="
