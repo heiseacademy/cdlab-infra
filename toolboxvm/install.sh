@@ -174,7 +174,7 @@ function do_install() {
   echo $TOOLBOXVM_VERSION > ~/.toolboxvm_version
 
   echo "===================================================="
-  echo "= Reboot, um die Änderungen zu aktivieren in 15s... ="
+  echo "= Rebooting in 15s to activate changes...          ="
   echo "===================================================="
 
   sleep 15
