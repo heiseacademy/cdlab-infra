@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 set -e
 
-TOOLBOXVM_VERSION="2.0.0"
+TB_VERSION="2.0.0"
+TB_LOG="~/.toolboxvm_setup_log"
 
 TERRAFORM_VERSION="0.15.5"
 ANSIBLE_VERSION="2.11.6-1ppa~focal"
@@ -14,39 +15,46 @@ NODEJS_VERSION="14.x" # 14.x is correct, see https://deb.nodesource.com/
 
 function do_install() {
   # passwordless sudo
+  echo "Setting up passwordless sudo..."
   echo "%adm ALL=(ALL) NOPASSWD:ALL" | sudo tee /etc/sudoers.d/adm
 
   # update system
-  sudo apt update
-  sudo apt upgrade --yes
-  sudo apt autoremove --yes
+  echo "Updating Ubuntu..."
+  sudo apt update > $TB_LOG
+  sudo apt upgrade --yes >> $TB_LOG
+  sudo apt autoremove --yes >> $TB_LOG
   
   # base packages
-  sudo apt install --yes vim jq dnsutils net-tools openssh-server \
+  echo "Installing some base packages..."
+  sudo apt install --yes snapd vim jq dnsutils net-tools openssh-server \
                         software-properties-common apt-transport-https \
                         ca-certificates curl gnupg lsb-release git \
-                        build-essential
+                        build-essential >> $TB_LOG
   echo -e ":syntax on\n:set softtabstop=2\n:set shiftwidth=2\n:set shiftround\n:set nojoinspaces\n:set noautoindent\n:set nu" > ~/.vimrc
 
   # npm/node
-  curl -sL https://deb.nodesource.com/setup_${ANSIBLE_VERSION} -o nodesource_setup.sh
-  sudo bash nodesource_setup.sh
-  sudo apt install --yes nodejs
+  echo "Installing nodejs ($NODEJS_VERSION)..."
+  curl -sL https://deb.nodesource.com/setup_${NODEJS_VERSION} -o nodesource_setup.sh
+  sudo bash nodesource_setup.sh >> $TB_LOG
+  sudo apt install --yes nodejs >> $TB_LOG
   rm -f nodesource_setup.sh
 
   # terraform
+  echo "Installing terraform ($TERRAFORM_VERSION)..."
   curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo apt-key add -
   sudo apt-add-repository --yes "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main"
-  sudo apt-get update && sudo apt-get install --yes terraform=${TERRAFORM_VERSION}
-  sudo apt-mark hold terraform
+  sudo apt-get update && sudo apt-get install --yes terraform=${TERRAFORM_VERSION} >> $TB_LOG
+  sudo apt-mark hold terraform >> $TB_LOG
   
   # ansible
+  echo "Installing ansible ($ANSIBLE_VERSION)..."
   sudo apt-add-repository --yes --update ppa:ansible/ansible
-  sudo apt update && sudo apt install --yes ansible-core=${ANSIBLE_VERSION}
-  sudo apt-mark hold ansible-core
-  ansible-galaxy collection install ansible.posix
-  ansible-galaxy collection install community.general
-  ansible-galaxy collection install community.docker
+  sudo apt update && sudo apt install --yes ansible-core=${ANSIBLE_VERSION} >> $TB_LOG
+  sudo apt-mark hold ansible-core >> $TB_LOG
+  echo "Installing some ansible modules via ansible-galaxy..."
+  ansible-galaxy collection install ansible.posix >> $TB_LOG
+  ansible-galaxy collection install community.general >> $TB_LOG
+  ansible-galaxy collection install community.docker >> $TB_LOG
 
   # python pip
   sudo apt install --yes python3-pip
