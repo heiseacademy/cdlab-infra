@@ -27,6 +27,26 @@ CDLAB_SSHKEYPUB_JENKINS="$(< ~/.heiseacademy/id_rsa-jenkins.pub)"
 GITLAB_HOST="gitlab.$(< ~/.heiseacademy/CDLAB_BASE_DOMAIN)"
 GITLAB_API_URL="https://$GITLAB_HOST/api/v4"
 
+# ------------ Wait for Gitlab Api to become fully functional
+J=0
+GITLAB_API_UP=0
+while [ $J -lt 300 -a $GITLAB_API_UP -eq 0 ];do
+  echo "curl -k -s -w "%{http_code}" -H "PRIVATE-TOKEN: $GITLAB_API_TOKEN" --head -o /dev/null $GITLAB_API_URL/projects"
+  HTTP_CODE=$(curl -k -s -w "%{http_code}" -H "PRIVATE-TOKEN: $GITLAB_API_TOKEN" --head -o /dev/null $GITLAB_API_URL/projects)
+  if [ "$HTTP_CODE"x = "200x" ];then
+    GITLAB_API_UP=1
+    echo "Gitlab API is up and healthy!"
+    break
+  fi
+  echo -n .
+  sleep 2
+  J=$(expr $J + 1)
+done
+if [ $GITLAB_API_UP -eq 0 ];then
+  echo "Gitlab API never came up!"
+  exit 1
+fi
+
 # ------------ Setting up Gitlab User $CDLAB_USERNAME_USER
 
 GITLAB_USER_ID=$(curl -sS -H "PRIVATE-TOKEN: $GITLAB_API_TOKEN" "$GITLAB_API_URL/users" | jq "map(select(.username == \"$CDLAB_USERNAME_USER\")) | .[0].id")
