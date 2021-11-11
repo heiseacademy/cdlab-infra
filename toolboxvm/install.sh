@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -e
 
-TB_VERSION="2.0.1"
+TB_VERSION="2.0.2"
 TB_TESTED_AT="2021-11-11T09:08:00CET"
 
 TERRAFORM_VERSION="0.15.5"
@@ -160,7 +160,7 @@ function do_install() {
   
   # Add cdlab-infra/scripts to PATH
   if ! grep 'cdlab-infra/scripts' ~/.bashrc;then
-    echo 'export PATH=$PATH:cdlab-infra/scripts' >> ~/.bashrc
+    echo 'export PATH=$PATH:~/workspace/cdlab-infra/scripts' >> ~/.bashrc
   fi
   
   # set hostname alias for db

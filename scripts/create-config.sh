@@ -2,8 +2,6 @@
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd )"
 set -e
 
-CREATE_CONFIG_VERSION="1.0.1"
-
 HA_CONFIG_FOLDER=~/.heiseacademy
 
 SHOW_USAGE=0
