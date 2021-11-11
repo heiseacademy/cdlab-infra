@@ -6,11 +6,11 @@ name: CI
     branches:
       - master
   schedule:
-    - cron: "0 7 * * 0"
+    - cron: "0 4 * * 5"
 
 defaults:
   run:
-    working-directory: 'geerlingguy.docker'
+    working-directory: 'geerlingguy.pip'
 
 jobs:
 
@@ -21,7 +21,7 @@ jobs:
       - name: Check out the codebase.
         uses: actions/checkout@v2
         with:
-          path: 'geerlingguy.docker'
+          path: 'geerlingguy.pip'
 
       - name: Set up Python 3.
         uses: actions/setup-python@v2
@@ -43,18 +43,16 @@ jobs:
         distro:
           - centos8
           - centos7
+          - fedora32
           - ubuntu2004
           - ubuntu1804
-          - debian11
           - debian10
-          - debian9
-          - fedora34
 
     steps:
       - name: Check out the codebase.
         uses: actions/checkout@v2
         with:
-          path: 'geerlingguy.docker'
+          path: 'geerlingguy.pip'
 
       - name: Set up Python 3.
         uses: actions/setup-python@v2
