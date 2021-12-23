@@ -62,7 +62,7 @@ if [ $CDLAB_BASE_DOMAIN = "checkconfig" ];then
     echo "create-config.sh \"<base DNS Domain>\" \"<DigitalOcean API Token>\" \"<Admin and User Password (OPTIONAL)>\""
     exit 1
   fi
-  echo "Configuration check was successfull - nothing suspicious found."
+  echo "Configuration check was successful - nothing suspicious found."
   exit 0
 fi
 # ------------ Token check
