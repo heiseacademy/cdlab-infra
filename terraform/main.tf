@@ -41,7 +41,7 @@ resource "digitalocean_droplet" "gitlab" {
   image  = "ubuntu-20-04-x64"
   name   = "gitlab"
   region = "fra1"
-  size   = "s-2vcpu-4gb"
+  size   = "s-4vcpu-8gb"
   ipv6   = false
   ssh_keys = [
     data.digitalocean_ssh_key.ssh_key.id
