@@ -19,6 +19,14 @@ Melde dich mit einem normalen Benutzeraccount an deiner Ubuntu 20.04 ToolboxVM a
 wget -q -O - https://raw.githubusercontent.com/heiseacademy/cdlab-infra/main/toolboxvm/install.sh | bash
 ```
 
+Da sich das Ubuntu Grundsystem selbständig regelmäßig im Hintergrund updated (unattended-upgrade), kann es sein, dass dieser Prozess gerade läuft, wenn du das `install.sh` Skript startest. Es erscheint dann dieser Fehler:
+
+```bash
+E: Unable to acquire the dpkg frontend lock (/var/lib/dpkg/lock-frontend), is another process using it?
+```
+
+Warte bitte ein paar Minuten, bis dieses Hintergundupdate abgeschlossen ist und starte dann die ToolboxVM Installation mittels `install.sh` erneut.
+
 Nachdem die Tools installiert sind, benötigst du jetzt noch eine individuelle Konfiguration im Verzeichnis `~/.heiseacademy` aus der sich dann Terraform und Ansible beim Bootstrappen/Provisionieren der VMs bedienen können.
 
 Dieses Konfigurationsverzeichnis erstellst du bitte mit dem Skript `~/workspace/cdlab-infra/scripts/create-config.sh` wie folgt:
