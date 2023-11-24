@@ -10,7 +10,9 @@ ANSIBLE_VERSION="2.12.7-1ppa~focal"
 ANSIBLE_GALAXY_ANSIBLE_POSIX_VERSION="1.3.0"
 ANSIBLE_GALAXY_COMMUNITY_DOCKER_VERSION="2.0.0"
 ANSIBLE_GALAXY_COMMUNITY_GENERAL_VERSION="4.0.1"
-MITOGEN_VERSION="c1e72b82258752d4a3155e88806c2e1235805eff"
+
+# disable mitogen for now (24.11.2023)
+# MITOGEN_VERSION="c1e72b82258752d4a3155e88806c2e1235805eff"
 
 DOCKER_CE_VERSION="5:20.10.10~3-0~ubuntu-focal"
 DOCKER_CE_CLI_VERSION="5:20.10.10~3-0~ubuntu-focal"
@@ -150,10 +152,12 @@ function do_install() {
   if [ ! -d ~/workspace/cdlab-infra ];then
     pushd ~/workspace
     git clone https://github.com/heiseacademy/cdlab-infra.git
-    cd cdlab-infra/ansible/plugins
-    git clone https://github.com/mitogen-hq/mitogen.git
-    cd mitogen
-    git checkout ${MITOGEN_VERSION}
+    
+    # disable mitogen for now (24.11.2023)
+    # cd cdlab-infra/ansible/plugins
+    # git clone https://github.com/mitogen-hq/mitogen.git
+    # cd mitogen
+    # git checkout ${MITOGEN_VERSION}
     popd
   fi
   echo "------------------------------------"

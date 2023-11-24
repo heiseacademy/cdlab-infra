@@ -19,7 +19,7 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update && \
     
 RUN python3 -m pip install --upgrade pip cffi && \
     pip install ansible-base==2.10.4 ansible==2.10.4 && \
-    pip install mitogen ansible-lint jmespath && \
+    pip install ansible-lint jmespath && \
     pip install --upgrade pywinrm && \
     ln -s /usr/bin/python3 /usr/bin/python
 
